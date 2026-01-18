@@ -1,4 +1,4 @@
-export default function ExplorePage() {
+const ExplorePage = () => {
   return (
     <main className="min-h-dvh p-8">
       <h1 className="text-xl font-semibold">탐험(데모)</h1>
@@ -7,4 +7,6 @@ export default function ExplorePage() {
       </p>
     </main>
   );
-}
+};
+
+export default ExplorePage;

@@ -1,4 +1,4 @@
-export default function AdminPage() {
+const AdminPage = () => {
   return (
     <main className="min-h-dvh p-8">
       <h1 className="text-xl font-semibold">어드민(데모)</h1>
@@ -7,4 +7,6 @@ export default function AdminPage() {
       </p>
     </main>
   );
-}
+};
+
+export default AdminPage;
