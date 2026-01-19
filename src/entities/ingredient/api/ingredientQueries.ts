@@ -50,7 +50,7 @@ export const useIngredientUpdateCollection = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: UpdateCollectionRequest }) =>
       ingredientApi.updateCollection(id, data),
-    onSuccess: (_, variables) => {
+    onSuccess: (_: IngredientCollection, variables: { id: number; data: UpdateCollectionRequest }) => {
       queryClient.invalidateQueries({ queryKey: ingredientKeys.detail(variables.id) });
       queryClient.invalidateQueries({ queryKey: ingredientKeys.lists() });
     },
@@ -66,7 +66,7 @@ export const useIngredientDeleteCollection = () => {
 
   return useMutation({
     mutationFn: (id: number) => ingredientApi.deleteCollection(id),
-    onSuccess: (_, id) => {
+    onSuccess: (_: void, id: number) => {
       queryClient.removeQueries({ queryKey: ingredientKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: ingredientKeys.lists() });
     },
@@ -83,7 +83,7 @@ export const useIngredientAddCollectionItem = () => {
   return useMutation({
     mutationFn: ({ collectionId, data }: { collectionId: number; data: AddCollectionItemRequest }) =>
       ingredientApi.addCollectionItem(collectionId, data),
-    onSuccess: (_, variables) => {
+    onSuccess: (_: void, variables: { collectionId: number; data: AddCollectionItemRequest }) => {
       queryClient.invalidateQueries({ queryKey: ingredientKeys.detail(variables.collectionId) });
     },
     retry: false,
