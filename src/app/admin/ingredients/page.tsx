@@ -16,6 +16,8 @@ export default function IngredientDetailPage() {
 
   const { data: ingredient, isLoading } = useIngredientAdmin(ingredientId ?? 0)
 
+  console.log('@@@@@@@@@', ingredient)
+
   useEffect(() => {
     if (!ingredientId) {
       // id가 없으면 리스트로 리다이렉트
@@ -250,11 +252,10 @@ function I18nSection({
           <button
             key={locale}
             onClick={() => setSelectedLocale(locale)}
-            className={`px-4 py-2 font-medium text-sm transition-colors ${
-              selectedLocale === locale
+            className={`px-4 py-2 font-medium text-sm transition-colors ${selectedLocale === locale
                 ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
                 : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-            }`}
+              }`}
           >
             {locale}
           </button>
@@ -359,11 +360,10 @@ function RelationsSection({
             <button
               key={type}
               onClick={() => setSelectedType(type)}
-              className={`px-4 py-2 font-medium text-sm transition-colors ${
-                selectedType === type
+              className={`px-4 py-2 font-medium text-sm transition-colors ${selectedType === type
                   ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-              }`}
+                }`}
             >
               {typeLabels[type]} ({count})
             </button>

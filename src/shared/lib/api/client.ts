@@ -54,10 +54,10 @@ export class ApiClient {
 
         // CSR: 상대 URL 사용 가능
         // SSR: 같은 서버이므로 상대 URL도 작동하지만, 명확성을 위해 절대 URL 사용
-        const baseUrl = typeof window !== 'undefined' 
-          ? window.location.origin 
+        const baseUrl = typeof window !== 'undefined'
+          ? window.location.origin
           : process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-        
+
         const refreshResponse = await fetch(`${baseUrl}/api/auth/refresh`, {
           method: 'POST',
           credentials: 'include', // httpOnly 쿠키 자동 전송
