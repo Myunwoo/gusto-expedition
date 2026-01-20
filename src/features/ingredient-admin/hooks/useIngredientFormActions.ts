@@ -1,7 +1,13 @@
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { usePopupStore } from '@/shared/hooks/store/popupStore'
-import { ingredientAdminApi } from '@/entities/ingredient_admin/api/ingredientAdminApi'
+import {
+  useCreateIngredient,
+  useUpdateIngredient,
+  useCreateIngredientI18n,
+  useUpdateIngredientI18n,
+  useCreateAlias,
+  useUpdateAliasAll,
+} from '@/entities/ingredient_admin/api/ingredientAdminQueries'
 import type {
   CreateIngredientBasicReqDto,
   UpdateIngredientBasicReqDto,
@@ -28,8 +34,8 @@ interface UseIngredientFormActionsParams {
 
 interface UseIngredientFormActionsReturn {
   isLoading: boolean
-  handleBaseInfoSave: () => Promise<void>
-  handleI18nAliasInfoSave: () => Promise<void>
+  handleBaseInfoSave: () => void
+  handleI18nAliasInfoSave: () => void
   handleEdgeInfoComplete: () => void
   handleCancel: () => void
 }
@@ -49,10 +55,25 @@ export const useIngredientFormActions = ({
 }: UseIngredientFormActionsParams): UseIngredientFormActionsReturn => {
   const router = useRouter()
   const popupStore = usePopupStore()
-  const [isLoading, setIsLoading] = useState(false)
+
+  // Mutations
+  const createIngredientMutation = useCreateIngredient()
+  const updateIngredientMutation = useUpdateIngredient()
+  const createI18nMutation = useCreateIngredientI18n()
+  const updateI18nMutation = useUpdateIngredientI18n()
+  const createAliasMutation = useCreateAlias()
+  const updateAliasAllMutation = useUpdateAliasAll()
+
+  const isLoading =
+    createIngredientMutation.isPending ||
+    updateIngredientMutation.isPending ||
+    createI18nMutation.isPending ||
+    updateI18nMutation.isPending ||
+    createAliasMutation.isPending ||
+    updateAliasAllMutation.isPending
 
   // 기본정보 저장
-  const handleBaseInfoSave = async () => {
+  const handleBaseInfoSave = () => {
     if (!baseInfoData.name.trim()) {
       popupStore.open({
         id: 'commonAlertPopup',
@@ -64,44 +85,57 @@ export const useIngredientFormActions = ({
       return
     }
 
-    setIsLoading(true)
-    try {
-      if (isEditMode && ingredientId) {
-        // 수정 모드
-        const data: UpdateIngredientBasicReqDto = {
-          ingredientId,
-          name: baseInfoData.name,
-          thumbnailUrl: baseInfoData.thumbnailUrl || undefined,
-          isActive: baseInfoData.isActive,
-        }
-        await ingredientAdminApi.updateIngredient(data)
-      } else {
-        // 등록 모드
-        const data: CreateIngredientBasicReqDto = {
-          name: baseInfoData.name,
-          thumbnailUrl: baseInfoData.thumbnailUrl || undefined,
-          isActive: baseInfoData.isActive,
-        }
-        const response = await ingredientAdminApi.createIngredient(data)
-        setIngredientId(response.ingredientId)
+    if (isEditMode && ingredientId) {
+      // 수정 모드
+      const data: UpdateIngredientBasicReqDto = {
+        ingredientId,
+        name: baseInfoData.name,
+        thumbnailUrl: baseInfoData.thumbnailUrl || undefined,
+        isActive: baseInfoData.isActive,
       }
-      setCurrentStep(2)
-    } catch (error) {
-      console.error('기본정보 저장 실패:', error)
-      popupStore.open({
-        id: 'commonAlertPopup',
-        data: {
-          title: '저장 실패',
-          content: '기본정보 저장에 실패했습니다.',
+      updateIngredientMutation.mutate(data, {
+        onSuccess: () => {
+          setCurrentStep(2)
+        },
+        onError: (error) => {
+          console.error('기본정보 저장 실패:', error)
+          popupStore.open({
+            id: 'commonAlertPopup',
+            data: {
+              title: '저장 실패',
+              content: '기본정보 저장에 실패했습니다.',
+            },
+          })
         },
       })
-    } finally {
-      setIsLoading(false)
+    } else {
+      // 등록 모드
+      const data: CreateIngredientBasicReqDto = {
+        name: baseInfoData.name,
+        thumbnailUrl: baseInfoData.thumbnailUrl || undefined,
+        isActive: baseInfoData.isActive,
+      }
+      createIngredientMutation.mutate(data, {
+        onSuccess: (response) => {
+          setIngredientId(response.ingredientId)
+          setCurrentStep(2)
+        },
+        onError: (error) => {
+          console.error('기본정보 저장 실패:', error)
+          popupStore.open({
+            id: 'commonAlertPopup',
+            data: {
+              title: '저장 실패',
+              content: '기본정보 저장에 실패했습니다.',
+            },
+          })
+        },
+      })
     }
   }
 
   // 다국어 + 별칭 저장
-  const handleI18nAliasInfoSave = async () => {
+  const handleI18nAliasInfoSave = () => {
     if (!ingredientId) {
       popupStore.open({
         id: 'commonAlertPopup',
@@ -128,27 +162,68 @@ export const useIngredientFormActions = ({
       return
     }
 
-    setIsLoading(true)
-    try {
-      if (isEditMode) {
-        await saveI18nDataUpdate(ingredientId, i18nAliasInfoData)
-      } else {
-        await saveI18nDataCreate(ingredientId, i18nAliasInfoData)
-      }
+    // 여러 locale에 대해 순차적으로 처리
+    const processLocale = async (locale: string, data: typeof i18nAliasInfoData.locales[string]) => {
+      if (!data.name.trim()) return
 
-      setCurrentStep(3)
-    } catch (error) {
-      console.error('다국어 정보 저장 실패:', error)
-      popupStore.open({
-        id: 'commonAlertPopup',
-        data: {
-          title: '저장 실패',
-          content: '다국어 정보 저장에 실패했습니다.',
-        },
-      })
-    } finally {
-      setIsLoading(false)
+      if (isEditMode) {
+        // 수정 모드
+        const i18nData: UpdateIngredientI18nReqDto = {
+          ingredientId,
+          locale,
+          name: data.name,
+          description: data.description || undefined,
+        }
+        await updateI18nMutation.mutateAsync(i18nData)
+
+        const aliasData: UpdateAliasAllReqDto = {
+          ingredientId,
+          locale,
+          aliases: data.aliases.filter((a) => a.trim() !== ''),
+        }
+        await updateAliasAllMutation.mutateAsync(aliasData)
+      } else {
+        // 등록 모드
+        const i18nData: CreateIngredientI18nReqDto = {
+          ingredientId,
+          locale,
+          name: data.name,
+          description: data.description || undefined,
+        }
+        await createI18nMutation.mutateAsync(i18nData)
+
+        if (data.aliases.length > 0) {
+          const aliasData: CreateAliasReqDto = {
+            ingredientId,
+            locale,
+            aliases: data.aliases.filter((a) => a.trim() !== ''),
+          }
+          if (aliasData.aliases.length > 0) {
+            await createAliasMutation.mutateAsync(aliasData)
+          }
+        }
+      }
     }
+
+    // 모든 locale 처리
+    Promise.all(
+      Object.entries(i18nAliasInfoData.locales).map(([locale, data]) =>
+        processLocale(locale, data)
+      )
+    )
+      .then(() => {
+        setCurrentStep(3)
+      })
+      .catch((error) => {
+        console.error('다국어 정보 저장 실패:', error)
+        popupStore.open({
+          id: 'commonAlertPopup',
+          data: {
+            title: '저장 실패',
+            content: '다국어 정보 저장에 실패했습니다.',
+          },
+        })
+      })
   }
 
   // 관계 정보 완료
@@ -183,66 +258,6 @@ export const useIngredientFormActions = ({
     handleI18nAliasInfoSave,
     handleEdgeInfoComplete,
     handleCancel,
-  }
-}
-
-/**
- * i18n 데이터 등록
- */
-const saveI18nDataCreate = async (
-  ingredientId: number,
-  i18nAliasInfoData: CreateI18nAliasInfoData
-) => {
-  for (const [locale, data] of Object.entries(i18nAliasInfoData.locales)) {
-    if (data.name.trim()) {
-      const i18nData: CreateIngredientI18nReqDto = {
-        ingredientId,
-        locale,
-        name: data.name,
-        description: data.description || undefined,
-      }
-      await ingredientAdminApi.createIngredientI18n(i18nData)
-
-      // Alias 생성
-      if (data.aliases.length > 0) {
-        const aliasData: CreateAliasReqDto = {
-          ingredientId,
-          locale,
-          aliases: data.aliases.filter((a) => a.trim() !== ''),
-        }
-        if (aliasData.aliases.length > 0) {
-          await ingredientAdminApi.createAlias(aliasData)
-        }
-      }
-    }
-  }
-}
-
-/**
- * i18n 데이터 수정
- */
-const saveI18nDataUpdate = async (
-  ingredientId: number,
-  i18nAliasInfoData: CreateI18nAliasInfoData
-) => {
-  for (const [locale, data] of Object.entries(i18nAliasInfoData.locales)) {
-    if (data.name.trim()) {
-      const i18nData: UpdateIngredientI18nReqDto = {
-        ingredientId,
-        locale,
-        name: data.name,
-        description: data.description || undefined,
-      }
-      await ingredientAdminApi.updateIngredientI18n(i18nData)
-
-      // Alias 일괄 수정
-      const aliasData: UpdateAliasAllReqDto = {
-        ingredientId,
-        locale,
-        aliases: data.aliases.filter((a) => a.trim() !== ''),
-      }
-      await ingredientAdminApi.updateAliasAll(aliasData)
-    }
   }
 }
 
