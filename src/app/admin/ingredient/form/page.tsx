@@ -30,19 +30,26 @@ const CreateIngredientPage = () => {
     setI18nAliasInfoData,
     setEdgeInfoData,
     isLoadingData,
+    originalAliases,
   } = useIngredientFormData({ editId, isEditMode })
 
   // 폼 액션 관리
-  const { isLoading, handleBaseInfoSave, handleI18nAliasInfoSave, handleEdgeInfoComplete, handleCancel } =
-    useIngredientFormActions({
-      isEditMode,
-      ingredientId,
-      setIngredientId,
-      baseInfoData,
-      i18nAliasInfoData,
-      currentStep,
-      setCurrentStep,
-    })
+  const {
+    isLoading,
+    handleBaseInfoSave,
+    handleI18nAliasInfoSave,
+    handleEdgeInfoComplete,
+    handleCancel,
+  } = useIngredientFormActions({
+    isEditMode,
+    ingredientId,
+    setIngredientId,
+    baseInfoData,
+    i18nAliasInfoData,
+    originalAliases,
+    currentStep,
+    setCurrentStep,
+  })
 
   // 네비게이션 핸들러
   const handlePrevious = () => setCurrentStep((prev) => (prev - 1) as Step)

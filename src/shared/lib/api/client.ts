@@ -27,13 +27,21 @@ export class ApiClient {
     options: RequestInit = {},
     retryCount = 0
   ): Promise<T> {
-    const url = `${this.baseURL}${endpoint}`;
+    const isClient = typeof window !== 'undefined';
+
+    // 클라이언트 사이드: 프록시 라우트 사용 (/api/*)
+    // 서버 사이드: 직접 백엔드 호출
+    const url = isClient
+      ? `/api${endpoint}`
+      : `${this.baseURL}${endpoint}`;
+
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...(options.headers as Record<string, string>),
     };
 
-    if (this.tokenStorage && typeof window === 'undefined') {
+    // 서버 사이드는 토큰 저장소에서 토큰 추출
+    if (this.tokenStorage && !isClient) {
       const accessToken = await this.tokenStorage.getAccessToken();
       if (accessToken) {
         headers['Authorization'] = `Bearer ${accessToken}`;
@@ -51,10 +59,7 @@ export class ApiClient {
     // 401 에러 - API Route를 통해 토큰 갱신 시도
     if (response.status === 401 && retryCount === 0) {
       try {
-
-        // CSR: 상대 URL 사용 가능
-        // SSR: 같은 서버이므로 상대 URL도 작동하지만, 명확성을 위해 절대 URL 사용
-        const baseUrl = typeof window !== 'undefined'
+        const baseUrl = isClient
           ? window.location.origin
           : process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 

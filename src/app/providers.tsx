@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider, MutationCache, QueryCache } from '@ta
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useState } from 'react';
 import { redirectToLogin } from '@/shared/lib/auth/auth-redirect';
+import { usePopupStore } from '@/shared/hooks/store/popupStore';
+import type { ApiError } from '@/shared/lib/api/client';
 
 /**
  * 401 에러 체크 및 리다이렉트
@@ -14,6 +16,52 @@ const checkAndRedirect401 = (error: unknown) => {
     return true
   }
   return false
+}
+
+/**
+ * ApiError인지 확인
+ */
+const isApiError = (error: unknown): error is ApiError => {
+  return (
+    error !== null &&
+    typeof error === 'object' &&
+    'status' in error &&
+    'errorCode' in error &&
+    'message' in error &&
+    typeof (error as ApiError).message === 'string'
+  )
+}
+
+/**
+ * 에러 메시지 추출
+ */
+const getErrorMessage = (error: unknown): string => {
+  if (isApiError(error)) {
+    return error.message
+  }
+  if (error instanceof Error) {
+    return error.message
+  }
+  return '오류가 발생했습니다. 다시 시도해주세요.'
+}
+
+/**
+ * 전역 에러 처리 (401 제외)
+ */
+const handleGlobalError = (error: unknown) => {
+  // 401 에러는 리다이렉트 처리하므로 제외
+  if (checkAndRedirect401(error)) {
+    return
+  }
+
+  const message = getErrorMessage(error)
+  usePopupStore.getState().open({
+    id: 'commonAlertPopup',
+    data: {
+      content: message,
+      buttonText: '확인',
+    },
+  })
 }
 
 /**
@@ -44,12 +92,14 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
         },
         mutationCache: new MutationCache({
           onError: (error) => {
-            checkAndRedirect401(error)
+            // 401 에러는 리다이렉트, 그 외는 팝업 표시
+            handleGlobalError(error)
           },
         }),
         queryCache: new QueryCache({
           onError: (error) => {
-            checkAndRedirect401(error)
+            // 401 에러는 리다이렉트, 그 외는 팝업 표시
+            handleGlobalError(error)
           },
         }),
       })

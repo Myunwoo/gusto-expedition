@@ -7,6 +7,7 @@ import type {
   CreateI18nAliasInfoLocaleData,
   CreateEdgeInfoData,
 } from '../types'
+import { DEFAULT_LOCALE } from '@/shared/config/locales'
 
 interface UseIngredientFormDataParams {
   editId: number | null
@@ -21,6 +22,7 @@ interface UseIngredientFormDataReturn {
   setI18nAliasInfoData: (data: CreateI18nAliasInfoData) => void
   setEdgeInfoData: (data: CreateEdgeInfoData) => void
   isLoadingData: boolean
+  originalAliases: Record<string, string[]> // locale별 원본 별칭 목록
 }
 
 /**
@@ -42,7 +44,7 @@ export const useIngredientFormData = ({
 
   const [i18nAliasInfoData, setI18nAliasInfoData] = useState<CreateI18nAliasInfoData>({
     locales: {
-      'ko-KR': { name: '', description: '', aliases: [] },
+      [DEFAULT_LOCALE]: { name: '', description: '', aliases: [] },
     },
   })
 
@@ -50,10 +52,19 @@ export const useIngredientFormData = ({
     relations: [],
   })
 
+  // 원본 별칭 데이터 저장
+  const [originalAliases, setOriginalAliases] = useState<Record<string, string[]>>({})
+
   // 수정 모드일 때 기존 데이터로 폼 초기화
   useEffect(() => {
     if (isEditMode && existingData) {
-      initializeFormData(existingData, setBaseInfoData, setI18nAliasInfoData, setEdgeInfoData)
+      initializeFormData(
+        existingData,
+        setBaseInfoData,
+        setI18nAliasInfoData,
+        setEdgeInfoData,
+        setOriginalAliases
+      )
     }
   }, [isEditMode, existingData])
 
@@ -65,6 +76,7 @@ export const useIngredientFormData = ({
     setI18nAliasInfoData,
     setEdgeInfoData,
     isLoadingData,
+    originalAliases,
   }
 }
 
@@ -75,7 +87,8 @@ const initializeFormData = (
   existingData: SelectIngredientResDto,
   setBaseInfoData: (data: CreateBaseInfoData) => void,
   setI18nAliasInfoData: (data: CreateI18nAliasInfoData) => void,
-  setEdgeInfoData: (data: CreateEdgeInfoData) => void
+  setEdgeInfoData: (data: CreateEdgeInfoData) => void,
+  setOriginalAliases: (aliases: Record<string, string[]>) => void
 ) => {
   // 기본정보 데이터 초기화
   const firstLocale = Object.keys(existingData.localeInfo)[0]
@@ -87,14 +100,20 @@ const initializeFormData = (
 
   // 다국어 + 별칭 데이터 초기화
   const locales: Record<string, CreateI18nAliasInfoLocaleData> = {}
+  const originalAliasesMap: Record<string, string[]> = {}
+
   Object.entries(existingData.localeInfo).forEach(([locale, info]) => {
+    const aliases = existingData.aliases[locale]?.map((a) => a.alias) || []
     locales[locale] = {
       name: info.name,
       description: info.description || '',
-      aliases: existingData.aliases[locale]?.map((a) => a.alias) || [],
+      aliases: [...aliases],
     }
+    originalAliasesMap[locale] = [...aliases] // 원본 별칭 저장
   })
+
   setI18nAliasInfoData({ locales })
+  setOriginalAliases(originalAliasesMap) // 원본 별칭 저장
 
   // 관계 데이터 초기화
   if (existingData.relatedIngredients) {

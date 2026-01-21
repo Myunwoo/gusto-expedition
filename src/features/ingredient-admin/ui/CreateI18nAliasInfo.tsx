@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { CreateI18nAliasInfoData, CreateI18nAliasInfoLocaleData } from "../types"
+import { SUPPORTED_LOCALE_CODES, DEFAULT_LOCALE } from "@/shared/config/locales"
 
 // Step 2: i18n + alias
 const CreateI18nAliasInfo = ({
@@ -9,8 +10,9 @@ const CreateI18nAliasInfo = ({
   data: CreateI18nAliasInfoData
   onChange: (data: CreateI18nAliasInfoData) => void
 }) => {
-  const [selectedLocale, setSelectedLocale] = useState<string>('ko-KR')
-  const availableLocales = ['ko-KR', 'en-US', 'it-IT']
+  const [selectedLocale, setSelectedLocale] = useState<string>(DEFAULT_LOCALE)
+  const [isComposing, setIsComposing] = useState(false)
+  const availableLocales = SUPPORTED_LOCALE_CODES
   const currentLocaleData = data.locales[selectedLocale] || {
     name: '',
     description: '',
@@ -30,9 +32,19 @@ const CreateI18nAliasInfo = ({
   }
 
   const addAlias = (alias: string) => {
-    if (alias.trim() && !currentLocaleData.aliases.includes(alias.trim())) {
+    const trimmedAlias = alias.trim()
+    if (!trimmedAlias) return
+
+    // 최신 상태를 직접 참조
+    const latestLocaleData = data.locales[selectedLocale] || {
+      name: '',
+      description: '',
+      aliases: [],
+    }
+
+    if (!latestLocaleData.aliases.includes(trimmedAlias)) {
       updateLocaleData(selectedLocale, {
-        aliases: [...currentLocaleData.aliases, alias.trim()],
+        aliases: [...latestLocaleData.aliases, trimmedAlias],
       })
     }
   }
@@ -44,7 +56,8 @@ const CreateI18nAliasInfo = ({
   }
 
   const handleAliasKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    // 한글 IME 조합 중에는 Enter 키 이벤트를 무시
+    if (e.key === 'Enter' && !isComposing) {
       e.preventDefault()
       const value = e.currentTarget.value
       if (value.trim()) {
@@ -52,6 +65,14 @@ const CreateI18nAliasInfo = ({
         e.currentTarget.value = ''
       }
     }
+  }
+
+  const handleCompositionStart = () => {
+    setIsComposing(true)
+  }
+
+  const handleCompositionEnd = () => {
+    setIsComposing(false)
   }
 
   return (
@@ -115,6 +136,8 @@ const CreateI18nAliasInfo = ({
           <input
             type="text"
             onKeyDown={handleAliasKeyDown}
+            onCompositionStart={handleCompositionStart}
+            onCompositionEnd={handleCompositionEnd}
             placeholder="별칭을 입력하고 Enter를 누르세요"
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-2"
           />

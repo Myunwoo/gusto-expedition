@@ -13,7 +13,6 @@ export const waitForHashChange = async (func: () => void) => {
   return await new Promise((resolve) => {
     const intervalId = setInterval(() => {
       if (window.location.hash !== currentHash) {
-        console.log('waitForHashChange 해시 변경 감지')
         clearInterval(intervalId)
         resolve(true)
       }

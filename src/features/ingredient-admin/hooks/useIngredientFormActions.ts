@@ -28,6 +28,7 @@ interface UseIngredientFormActionsParams {
   setIngredientId: (id: number | null) => void
   baseInfoData: CreateBaseInfoData
   i18nAliasInfoData: CreateI18nAliasInfoData
+  originalAliases: Record<string, string[]> // locale별 원본 별칭 목록
   currentStep: Step
   setCurrentStep: (step: Step) => void
 }
@@ -50,6 +51,7 @@ export const useIngredientFormActions = ({
   setIngredientId,
   baseInfoData,
   i18nAliasInfoData,
+  originalAliases,
   currentStep,
   setCurrentStep,
 }: UseIngredientFormActionsParams): UseIngredientFormActionsReturn => {
@@ -97,16 +99,6 @@ export const useIngredientFormActions = ({
         onSuccess: () => {
           setCurrentStep(2)
         },
-        onError: (error) => {
-          console.error('기본정보 저장 실패:', error)
-          popupStore.open({
-            id: 'commonAlertPopup',
-            data: {
-              title: '저장 실패',
-              content: '기본정보 저장에 실패했습니다.',
-            },
-          })
-        },
       })
     } else {
       // 등록 모드
@@ -119,16 +111,6 @@ export const useIngredientFormActions = ({
         onSuccess: (response) => {
           setIngredientId(response.ingredientId)
           setCurrentStep(2)
-        },
-        onError: (error) => {
-          console.error('기본정보 저장 실패:', error)
-          popupStore.open({
-            id: 'commonAlertPopup',
-            data: {
-              title: '저장 실패',
-              content: '기본정보 저장에 실패했습니다.',
-            },
-          })
         },
       })
     }
@@ -176,12 +158,23 @@ export const useIngredientFormActions = ({
         }
         await updateI18nMutation.mutateAsync(i18nData)
 
-        const aliasData: UpdateAliasAllReqDto = {
-          ingredientId,
-          locale,
-          aliases: data.aliases.filter((a) => a.trim() !== ''),
+        // 별칭 변경 감지: 원본과 현재 별칭 비교
+        const currentAliases = data.aliases.filter((a) => a.trim() !== '').sort()
+        const originalAliasList = (originalAliases[locale] || []).sort()
+
+        // 별칭이 변경된 경우에만 API 호출
+        const hasAliasChanged =
+          currentAliases.length !== originalAliasList.length ||
+          !currentAliases.every((alias, index) => alias === originalAliasList[index])
+
+        if (hasAliasChanged) {
+          const aliasData: UpdateAliasAllReqDto = {
+            ingredientId,
+            locale,
+            aliases: currentAliases,
+          }
+          await updateAliasAllMutation.mutateAsync(aliasData)
         }
-        await updateAliasAllMutation.mutateAsync(aliasData)
       } else {
         // 등록 모드
         const i18nData: CreateIngredientI18nReqDto = {
@@ -216,13 +209,6 @@ export const useIngredientFormActions = ({
       })
       .catch((error) => {
         console.error('다국어 정보 저장 실패:', error)
-        popupStore.open({
-          id: 'commonAlertPopup',
-          data: {
-            title: '저장 실패',
-            content: '다국어 정보 저장에 실패했습니다.',
-          },
-        })
       })
   }
 

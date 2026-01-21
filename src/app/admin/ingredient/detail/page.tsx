@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 // import { usePopupStore } from '@/shared/hooks/store/popupStore'
 import { useIngredientAdmin } from '@/entities/ingredient_admin/api/ingredientAdminQueries'
 import type { SelectIngredientResDto } from '@/entities/ingredient_admin/model/types'
+import { DEFAULT_LOCALE } from '@/shared/config/locales'
 
 export default function IngredientDetailPage() {
   const searchParams = useSearchParams()
@@ -15,8 +16,6 @@ export default function IngredientDetailPage() {
   // const popupStore = usePopupStore()
 
   const { data: ingredient, isLoading } = useIngredientAdmin(ingredientId ?? 0)
-
-  console.log('@@@@@@@@@', ingredient)
 
   useEffect(() => {
     if (!ingredientId) {
@@ -235,7 +234,7 @@ function I18nSection({
 }) {
   const locales = Object.keys(ingredient.localeInfo)
   const [selectedLocale, setSelectedLocale] = useState<string>(
-    locales.length > 0 ? locales[0] : 'ko-KR'
+    locales.length > 0 ? locales[0] : DEFAULT_LOCALE
   )
   const currentLocaleInfo = ingredient.localeInfo[selectedLocale]
   const currentAliases = ingredient.aliases[selectedLocale] || []
@@ -253,8 +252,8 @@ function I18nSection({
             key={locale}
             onClick={() => setSelectedLocale(locale)}
             className={`px-4 py-2 font-medium text-sm transition-colors ${selectedLocale === locale
-                ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+              ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
               }`}
           >
             {locale}
@@ -361,8 +360,8 @@ function RelationsSection({
               key={type}
               onClick={() => setSelectedType(type)}
               className={`px-4 py-2 font-medium text-sm transition-colors ${selectedType === type
-                  ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                 }`}
             >
               {typeLabels[type]} ({count})
