@@ -2,11 +2,10 @@ import { apiClient } from '@/shared/lib/api/client';
 import type {
   CreateIngredientBasicReqDto,
   CreateIngredientBasicResDto,
-  CreateIngredientI18nReqDto,
-  CreateIngredientI18nResDto,
   CreateAliasReqDto,
   CreateAliasResDto,
   SelectIngredientResDto,
+  SelectIngredientListItemDto,
   UpdateIngredientBasicReqDto,
   UpdateIngredientBasicResDto,
   UpdateIngredientI18nReqDto,
@@ -59,6 +58,13 @@ export const ingredientAdminApi = {
   },
 
   /**
+   * 재료 목록 조회
+   */
+  selectAll: (): Promise<SelectIngredientListItemDto[]> => {
+    return apiClient.get('/admin/ingredient/selectAll');
+  },
+
+  /**
    * 재료 기본정보 수정
    */
   updateIngredient: (data: UpdateIngredientBasicReqDto): Promise<UpdateIngredientBasicResDto> => {
@@ -73,14 +79,7 @@ export const ingredientAdminApi = {
   },
 
   /**
-   * 재료 locale별 기본정보 생성
-   */
-  createIngredientI18n: (data: CreateIngredientI18nReqDto): Promise<CreateIngredientI18nResDto> => {
-    return apiClient.post('/admin/ingredient/createIngredientI18n', data);
-  },
-
-  /**
-   * 재료 locale별 기본정보 수정
+   * 재료 locale별 기본정보 저장 (upsert: 없으면 생성, 있으면 수정)
    */
   updateIngredientI18n: (data: UpdateIngredientI18nReqDto): Promise<UpdateIngredientI18nResDto> => {
     return apiClient.post('/admin/ingredient/updateIngredientI18n', data);

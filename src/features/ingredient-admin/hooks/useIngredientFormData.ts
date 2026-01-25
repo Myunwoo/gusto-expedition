@@ -91,9 +91,8 @@ const initializeFormData = (
   setOriginalAliases: (aliases: Record<string, string[]>) => void
 ) => {
   // 기본정보 데이터 초기화
-  const firstLocale = Object.keys(existingData.localeInfo)[0]
   setBaseInfoData({
-    name: existingData.localeInfo[firstLocale]?.name || '',
+    name: existingData.name || '',
     thumbnailUrl: existingData.thumbnailUrl || '',
     isActive: existingData.isActive,
   })

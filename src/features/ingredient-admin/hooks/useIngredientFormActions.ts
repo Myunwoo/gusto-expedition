@@ -3,7 +3,6 @@ import { usePopupStore } from '@/shared/hooks/store/popupStore'
 import {
   useCreateIngredient,
   useUpdateIngredient,
-  useCreateIngredientI18n,
   useUpdateIngredientI18n,
   useCreateAlias,
   useUpdateAliasAll,
@@ -11,7 +10,6 @@ import {
 import type {
   CreateIngredientBasicReqDto,
   UpdateIngredientBasicReqDto,
-  CreateIngredientI18nReqDto,
   UpdateIngredientI18nReqDto,
   CreateAliasReqDto,
   UpdateAliasAllReqDto,
@@ -61,7 +59,6 @@ export const useIngredientFormActions = ({
   // Mutations
   const createIngredientMutation = useCreateIngredient()
   const updateIngredientMutation = useUpdateIngredient()
-  const createI18nMutation = useCreateIngredientI18n()
   const updateI18nMutation = useUpdateIngredientI18n()
   const createAliasMutation = useCreateAlias()
   const updateAliasAllMutation = useUpdateAliasAll()
@@ -69,7 +66,6 @@ export const useIngredientFormActions = ({
   const isLoading =
     createIngredientMutation.isPending ||
     updateIngredientMutation.isPending ||
-    createI18nMutation.isPending ||
     updateI18nMutation.isPending ||
     createAliasMutation.isPending ||
     updateAliasAllMutation.isPending

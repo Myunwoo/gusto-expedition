@@ -1,13 +1,46 @@
 import { CreateBaseInfoData } from "../types"
+import type { CreateIngredientBasicReqDto, UpdateIngredientBasicReqDto } from "@/entities/ingredient_admin/model/types"
+
+interface CreateBaseInfoProps {
+  data: CreateBaseInfoData
+  onChange: (data: CreateBaseInfoData) => void
+  isEditMode: boolean
+  ingredientId: number | null
+  onSave: (data: CreateIngredientBasicReqDto | UpdateIngredientBasicReqDto) => Promise<void>
+  isLoading: boolean
+}
 
 // Step 1: 기본정보
 const CreateBaseInfo = ({
   data,
   onChange,
-}: {
-  data: CreateBaseInfoData
-  onChange: (data: CreateBaseInfoData) => void
-}) => {
+  isEditMode,
+  ingredientId,
+  onSave,
+  isLoading,
+}: CreateBaseInfoProps) => {
+  const handleSave = async () => {
+    if (!data.name.trim()) {
+      return
+    }
+
+    if (isEditMode && ingredientId) {
+      const updateData: UpdateIngredientBasicReqDto = {
+        ingredientId,
+        name: data.name,
+        thumbnailUrl: data.thumbnailUrl || undefined,
+        isActive: data.isActive,
+      }
+      await onSave(updateData)
+    } else {
+      const createData: CreateIngredientBasicReqDto = {
+        name: data.name,
+        thumbnailUrl: data.thumbnailUrl || undefined,
+        isActive: data.isActive,
+      }
+      await onSave(createData)
+    }
+  }
   return (
     <div className="space-y-6">
       <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
@@ -52,6 +85,16 @@ const CreateBaseInfo = ({
             활성화
           </span>
         </label>
+      </div>
+
+      <div className="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+        <button
+          onClick={handleSave}
+          disabled={isLoading || !data.name.trim()}
+          className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed rounded-lg transition-colors"
+        >
+          {isLoading ? '저장 중...' : isEditMode ? '수정' : '등록'}
+        </button>
       </div>
     </div>
   )

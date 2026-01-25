@@ -345,6 +345,20 @@ function RelationsSection({
     NEUTRAL: '중립',
   }
 
+  // 백엔드 점수(-1.0~1.0)를 UI 점수(1-10)로 변환
+  const convertScoreToDisplay = (score: number, relationType: 'PAIR_WELL' | 'AVOID' | 'NEUTRAL'): number | null => {
+    if (relationType === 'NEUTRAL') {
+      return null // 중립은 점수 없음
+    }
+    if (relationType === 'PAIR_WELL') {
+      // 0.1~1.0 -> 1~10
+      return Math.round(score * 10)
+    } else { // AVOID
+      // -1.0~-0.1 -> 1~10 (절댓값 사용)
+      return Math.round(Math.abs(score) * 10)
+    }
+  }
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
       <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
@@ -384,7 +398,10 @@ function RelationsSection({
                     {relation.name}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    점수: {relation.score} | 신뢰도: {relation.confidence}
+                    {convertScoreToDisplay(relation.score, relation.relationType) !== null
+                      ? `점수: ${convertScoreToDisplay(relation.score, relation.relationType)}/10`
+                      : '점수: -'}
+                    {' | '}신뢰도: {Math.round(relation.confidence * 100)}%
                   </p>
                   {relation.reasonSummary && (
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">

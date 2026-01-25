@@ -6,7 +6,6 @@ import { ingredientAdminKeys } from './ingredientAdminQueryKeys';
 import type {
   CreateIngredientBasicReqDto,
   UpdateIngredientBasicReqDto,
-  CreateIngredientI18nReqDto,
   UpdateIngredientI18nReqDto,
   CreateAliasReqDto,
   UpdateAliasAllReqDto,
@@ -25,6 +24,19 @@ export const useIngredientAdmin = (id: number) => {
     refetchOnWindowFocus: true,
     retry: 3,
     enabled: !!id,
+  });
+};
+
+/**
+ * 재료 목록 조회
+ */
+export const useIngredientList = () => {
+  return useQuery({
+    queryKey: ingredientAdminKeys.lists(),
+    queryFn: () => ingredientAdminApi.selectAll(),
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: 3,
   });
 };
 
@@ -62,23 +74,7 @@ export const useUpdateIngredient = () => {
 };
 
 /**
- * 재료 i18n 정보 생성 Mutation
- */
-export const useCreateIngredientI18n = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (data: CreateIngredientI18nReqDto) =>
-      ingredientAdminApi.createIngredientI18n(data),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ingredientAdminKeys.detail(variables.ingredientId) });
-    },
-    retry: false,
-  });
-};
-
-/**
- * 재료 i18n 정보 수정 Mutation
+ * 재료 i18n 정보 저장 Mutation (upsert: 없으면 생성, 있으면 수정)
  */
 export const useUpdateIngredientI18n = () => {
   const queryClient = useQueryClient();

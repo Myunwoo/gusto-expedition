@@ -2,6 +2,7 @@ import { useState } from "react"
 import { CreateEdgeInfoData } from "../types"
 import { CreateEdgeReqDto, IngredientRelationType } from "@/entities/ingredient_admin/model/types"
 import { ingredientAdminApi } from '@/entities/ingredient_admin/api/ingredientAdminApi'
+import { usePopupStore } from '@/shared/hooks/store/popupStore'
 
 // Step 3: 관계 조작
 const CreateEdgeInfo = ({
@@ -9,34 +10,62 @@ const CreateEdgeInfo = ({
   data,
   onChange,
 }: {
-  ingredientId: number | null
+  ingredientId: number
   data: CreateEdgeInfoData
   onChange: (data: CreateEdgeInfoData) => void
 }) => {
+  const popupStore = usePopupStore()
   const [showAddRelation, setShowAddRelation] = useState(false)
   const [newRelation, setNewRelation] = useState({
+    toIngredientId: null as number | null,
     toIngredientName: '',
     relationType: 'PAIR_WELL' as IngredientRelationType,
     score: 5,
     reasonSummary: '',
   })
 
+  const handleOpenIngredientSelect = () => {
+    popupStore.open({
+      id: 'ingredientSelectPopup',
+      data: {
+        onSelect: (ingredient) => {
+          setNewRelation({
+            ...newRelation,
+            toIngredientId: ingredient.ingredientId,
+            toIngredientName: ingredient.name,
+          })
+        },
+      },
+    })
+  }
+
   const handleAddRelation = async () => {
-    // TODO: 실제로는 toIngredientId를 검색해서 찾아야 함
-    // 여기서는 데모용으로 간단히 처리
-    if (!ingredientId || !newRelation.toIngredientName.trim()) {
+    // 수정 모드에서만 호출되므로 ingredientId는 항상 존재함
+    if (!newRelation.toIngredientId || !newRelation.toIngredientName.trim()) {
       return
     }
 
-    // 실제 구현에서는 ingredient 검색 API를 호출해야 함
-    const mockToIngredientId = 999 // 임시 값
+    // PAIR_WELL 또는 AVOID일 때는 점수 필수
+    if (
+      (newRelation.relationType === 'PAIR_WELL' || newRelation.relationType === 'AVOID') &&
+      (!newRelation.score || newRelation.score < 1 || newRelation.score > 10)
+    ) {
+      popupStore.open({
+        id: 'commonAlertPopup',
+        data: {
+          title: '입력 오류',
+          content: '궁합/비궁합 관계는 점수(1-10)를 입력해주세요.',
+        },
+      })
+      return
+    }
 
     try {
       const edgeData: CreateEdgeReqDto = {
         fromIngredientId: ingredientId,
-        toIngredientId: mockToIngredientId,
+        toIngredientId: newRelation.toIngredientId,
         relationType: newRelation.relationType,
-        score: newRelation.score,
+        score: newRelation.relationType === 'NEUTRAL' ? undefined : newRelation.score,
         reasonSummary: newRelation.reasonSummary || undefined,
       }
 
@@ -46,7 +75,7 @@ const CreateEdgeInfo = ({
         relations: [
           ...data.relations,
           {
-            toIngredientId: mockToIngredientId,
+            toIngredientId: newRelation.toIngredientId,
             toIngredientName: newRelation.toIngredientName,
             relationType: newRelation.relationType,
             score: newRelation.score,
@@ -56,6 +85,7 @@ const CreateEdgeInfo = ({
       })
 
       setNewRelation({
+        toIngredientId: null,
         toIngredientName: '',
         relationType: 'PAIR_WELL',
         score: 5,
@@ -94,15 +124,23 @@ const CreateEdgeInfo = ({
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               대상 재료 (to)
             </label>
-            <input
-              type="text"
-              value={newRelation.toIngredientName}
-              onChange={(e) =>
-                setNewRelation({ ...newRelation, toIngredientName: e.target.value })
-              }
-              placeholder="재료명을 입력하세요 (검색 기능은 추후 구현)"
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newRelation.toIngredientName}
+                readOnly
+                placeholder="재료를 선택하세요"
+                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 cursor-pointer"
+                onClick={handleOpenIngredientSelect}
+              />
+              <button
+                type="button"
+                onClick={handleOpenIngredientSelect}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
+              >
+                선택
+              </button>
+            </div>
           </div>
 
           <div>
@@ -127,24 +165,37 @@ const CreateEdgeInfo = ({
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              점수 (1-10)
-            </label>
-            <input
-              type="number"
-              min="1"
-              max="10"
-              value={newRelation.score}
-              onChange={(e) =>
-                setNewRelation({
-                  ...newRelation,
-                  score: parseInt(e.target.value) || 5,
-                })
-              }
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
+          {/* 점수 입력 필드: NEUTRAL이 아닐 때만 표시 */}
+          {newRelation.relationType !== 'NEUTRAL' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                점수 (1-10) <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={newRelation.score || ''}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, '')
+                  if (value === '') {
+                    setNewRelation({
+                      ...newRelation,
+                      score: 0,
+                    })
+                  } else {
+                    const numValue = parseInt(value, 10)
+                    if (numValue >= 1 && numValue <= 10) {
+                      setNewRelation({
+                        ...newRelation,
+                        score: numValue,
+                      })
+                    }
+                  }
+                }}
+                placeholder="1-10 사이의 숫자를 입력하세요"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">

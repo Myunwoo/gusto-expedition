@@ -1,18 +1,28 @@
 import { useState } from "react"
 import { CreateI18nAliasInfoData, CreateI18nAliasInfoLocaleData } from "../types"
 import { SUPPORTED_LOCALE_CODES, DEFAULT_LOCALE } from "@/shared/config/locales"
+import type { UpdateIngredientI18nReqDto } from "@/entities/ingredient_admin/model/types"
 
-// Step 2: i18n + alias
-const CreateI18nAliasInfo = ({
-  data,
-  onChange,
-}: {
+interface CreateI18nInfoProps {
   data: CreateI18nAliasInfoData
   onChange: (data: CreateI18nAliasInfoData) => void
-}) => {
+  isEditMode: boolean
+  ingredientId: number | null
+  onSave: (data: UpdateIngredientI18nReqDto) => Promise<void>
+  isLoading: boolean
+}
+
+const CreateI18nInfo = ({
+  data,
+  onChange,
+  isEditMode,
+  ingredientId,
+  onSave,
+  isLoading,
+}: CreateI18nInfoProps) => {
   const [selectedLocale, setSelectedLocale] = useState<string>(DEFAULT_LOCALE)
-  const [isComposing, setIsComposing] = useState(false)
   const availableLocales = SUPPORTED_LOCALE_CODES
+  
   const currentLocaleData = data.locales[selectedLocale] || {
     name: '',
     description: '',
@@ -31,54 +41,30 @@ const CreateI18nAliasInfo = ({
     })
   }
 
-  const addAlias = (alias: string) => {
-    const trimmedAlias = alias.trim()
-    if (!trimmedAlias) return
-
-    // 최신 상태를 직접 참조
-    const latestLocaleData = data.locales[selectedLocale] || {
-      name: '',
-      description: '',
-      aliases: [],
+  const handleSave = async () => {
+    if (!ingredientId) {
+      return
     }
 
-    if (!latestLocaleData.aliases.includes(trimmedAlias)) {
-      updateLocaleData(selectedLocale, {
-        aliases: [...latestLocaleData.aliases, trimmedAlias],
-      })
+    const localeData = currentLocaleData
+    if (!localeData.name.trim()) {
+      return
     }
-  }
 
-  const removeAlias = (index: number) => {
-    updateLocaleData(selectedLocale, {
-      aliases: currentLocaleData.aliases.filter((_, i) => i !== index),
-    })
-  }
-
-  const handleAliasKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // 한글 IME 조합 중에는 Enter 키 이벤트를 무시
-    if (e.key === 'Enter' && !isComposing) {
-      e.preventDefault()
-      const value = e.currentTarget.value
-      if (value.trim()) {
-        addAlias(value)
-        e.currentTarget.value = ''
-      }
+    // i18n 저장 (upsert: 없으면 생성, 있으면 수정)
+    const i18nData: UpdateIngredientI18nReqDto = {
+      ingredientId,
+      locale: selectedLocale,
+      name: localeData.name,
+      description: localeData.description || undefined,
     }
-  }
-
-  const handleCompositionStart = () => {
-    setIsComposing(true)
-  }
-
-  const handleCompositionEnd = () => {
-    setIsComposing(false)
+    await onSave(i18nData)
   }
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-        다국어 정보 + 별칭
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        다국어 정보
       </h2>
 
       {/* 언어 탭 */}
@@ -128,39 +114,20 @@ const CreateI18nAliasInfo = ({
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
           />
         </div>
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            별칭 (Alias)
-          </label>
-          <input
-            type="text"
-            onKeyDown={handleAliasKeyDown}
-            onCompositionStart={handleCompositionStart}
-            onCompositionEnd={handleCompositionEnd}
-            placeholder="별칭을 입력하고 Enter를 누르세요"
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-2"
-          />
-          <div className="flex flex-wrap gap-2">
-            {currentLocaleData.aliases.map((alias, index) => (
-              <span
-                key={index}
-                className="inline-flex items-center px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm"
-              >
-                {alias}
-                <button
-                  onClick={() => removeAlias(index)}
-                  className="ml-2 text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-100"
-                >
-                  ×
-                </button>
-              </span>
-            ))}
-          </div>
-        </div>
+      <div className="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+        <button
+          onClick={handleSave}
+          disabled={isLoading || !ingredientId || !currentLocaleData.name.trim()}
+          className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed rounded-lg transition-colors"
+        >
+          {isLoading ? '저장 중...' : isEditMode ? '수정' : '등록'} ({selectedLocale})
+        </button>
       </div>
     </div>
   )
 }
 
-export default CreateI18nAliasInfo
+export default CreateI18nInfo
+

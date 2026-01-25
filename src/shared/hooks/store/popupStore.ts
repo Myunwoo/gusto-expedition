@@ -7,6 +7,7 @@ type PopupDataMap = {
   commonAlertPopup: CommonAlertPopupData
   commonConfirmPopup: CommonConfirmPopupData
   zipCodeSrchPopup: ZipCodeSrchPopupData
+  ingredientSelectPopup: IngredientSelectPopupData
   // 다른 팝업 타입들을 여기에 추가
 }
 
@@ -84,6 +85,10 @@ export type CommonConfirmPopupData = {
 
 export type ZipCodeSrchPopupData = {
   selectCallback?: (zip: string, address: string) => void
+}
+
+export type IngredientSelectPopupData = {
+  onSelect: (ingredient: { ingredientId: number; name: string; isActive: boolean }) => void
 }
 
 // 보조 함수: 팝업 정보 삭제

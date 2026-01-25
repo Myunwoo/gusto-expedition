@@ -183,6 +183,7 @@ export interface DeleteAliasResDto {
 // 재료 조회 응답 DTO
 export interface SelectIngredientResDto {
   ingredientId: number;
+  name: string; // ingredient 테이블의 name 컬럼
   localeInfo: Record<string, IngredientLocaleInfoDto>;
   thumbnailUrl: string;
   isActive: boolean;
@@ -192,12 +193,19 @@ export interface SelectIngredientResDto {
   updatedAt: string;
 }
 
+// 재료 목록 항목 DTO
+export interface SelectIngredientListItemDto {
+  ingredientId: number;
+  name: string;
+  isActive: boolean;
+}
+
 // 재료 간 관계 생성 요청
 export interface CreateEdgeReqDto {
   fromIngredientId: number;
   toIngredientId: number;
   relationType: IngredientRelationType;
-  score: number;
+  score?: number; // PAIR_WELL/AVOID: 1-10 필수, NEUTRAL: 선택사항
   confidence?: number;
   reasonSummary?: string;
 }
