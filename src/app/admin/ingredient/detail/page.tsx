@@ -117,11 +117,11 @@ export default function IngredientDetailPage() {
                 </a>
                 <span className="mx-2">/</span>
                 <span className="text-gray-900 dark:text-gray-100">
-                  {Object.values(ingredient.localeInfo)[0]?.name || '재료 상세'}
+                  {ingredient.name || '재료 상세'}
                 </span>
               </nav>
               <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                {Object.values(ingredient.localeInfo)[0]?.name || '재료 상세'}
+                {ingredient.name || '재료 상세'}
               </h1>
             </div>
             {/* 편집/삭제 버튼 - 주석 처리 */}
@@ -166,8 +166,6 @@ function BasicInfoSection({
 }: {
   ingredient: SelectIngredientResDto
 }) {
-  const defaultLocaleInfo = Object.values(ingredient.localeInfo)[0]
-
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
       <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
@@ -179,7 +177,7 @@ function BasicInfoSection({
             기본명
           </label>
           <p className="text-gray-900 dark:text-gray-100">
-            {defaultLocaleInfo?.name || '-'}
+            {ingredient.name || '-'}
           </p>
         </div>
 
@@ -190,7 +188,7 @@ function BasicInfoSection({
           {ingredient.thumbnailUrl ? (
             <img
               src={ingredient.thumbnailUrl}
-              alt={defaultLocaleInfo?.name || '재료 이미지'}
+              alt={ingredient.name || '재료 이미지'}
               className="w-32 h-32 object-cover rounded-lg"
             />
           ) : (
