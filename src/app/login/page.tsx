@@ -32,11 +32,11 @@ export default function LoginPage() {
       return response.json();
     },
     onSuccess: () => {
-      // 홈으로 리다이렉트
-      router.push('/admin/ingredients');
+      // 어드민 메인 페이지로 리다이렉트
+      router.push('/admin');
     },
-    onError: (error: any) => {
-      setError(error.message || '로그인에 실패했습니다.');
+    onError: (error: unknown) => {
+      setError((error as Error).message || '로그인에 실패했습니다.');
     },
   });
 

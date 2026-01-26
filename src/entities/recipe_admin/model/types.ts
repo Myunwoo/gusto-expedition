@@ -119,3 +119,65 @@ export interface SelectRecipeResDto {
   updatedAt: string;
 }
 
+// 레시피 재료 역할
+export type RecipeIngredientRole = 'REQUIRED' | 'OPTIONAL';
+
+// 레시피 재료 목록 항목
+export interface SelectRecipeIngredientListItemDto {
+  recipeIngredientId: number;
+  ingredientId: number;
+  ingredientName: string;
+  role: RecipeIngredientRole;
+  amount?: number;
+  unit?: string;
+  note?: string;
+}
+
+// 레시피 재료 추가 요청
+export interface CreateRecipeIngredientReqDto {
+  recipeId: number;
+  ingredientId: number;
+  role?: RecipeIngredientRole;
+  amount?: number;
+  unit?: string;
+  note?: string;
+}
+
+// 레시피 재료 추가 응답
+export interface CreateRecipeIngredientResDto {
+  recipeIngredientId: number;
+  recipeId: number;
+  ingredientId: number;
+  role: RecipeIngredientRole;
+  amount?: number;
+  unit?: string;
+  note?: string;
+  createdAt: string;
+}
+
+// 레시피 재료 수정 요청
+export interface UpdateRecipeIngredientReqDto {
+  recipeIngredientId: number;
+  role?: RecipeIngredientRole;
+  amount?: number;
+  unit?: string;
+  note?: string;
+}
+
+// 레시피 재료 수정 응답
+export interface UpdateRecipeIngredientResDto {
+  recipeIngredientId: number;
+  recipeId: number;
+  ingredientId: number;
+  role: RecipeIngredientRole;
+  amount?: number;
+  unit?: string;
+  note?: string;
+}
+
+// 레시피 재료 삭제 응답
+export interface DeleteRecipeIngredientResDto {
+  recipeIngredientId: number;
+  message: string;
+}
+

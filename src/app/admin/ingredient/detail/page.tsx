@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { usePopupStore } from '@/shared/hooks/store/popupStore'
 import { useIngredientAdmin, useDeleteIngredient } from '@/entities/ingredient_admin/api/ingredientAdminQueries'
 import type { SelectIngredientResDto } from '@/entities/ingredient_admin/model/types'
@@ -19,7 +20,7 @@ export default function IngredientDetailPage() {
   useEffect(() => {
     if (!ingredientId) {
       // id가 없으면 리스트로 리다이렉트
-      router.push('/admin/ingredients')
+      router.push('/admin/ingredient')
       return
     }
   }, [ingredientId, router])
@@ -96,9 +97,9 @@ export default function IngredientDetailPage() {
           <div className="flex items-center justify-between">
             <div>
               <nav className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                <a href="/admin/ingredients" className="hover:text-gray-700 dark:hover:text-gray-300">
+                <Link href="/admin/ingredient" className="hover:text-gray-700 dark:hover:text-gray-300">
                   Ingredients
-                </a>
+                </Link>
                 <span className="mx-2">/</span>
                 <span className="text-gray-900 dark:text-gray-100">
                   {ingredient.name || '재료 상세'}

@@ -20,6 +20,8 @@ import type {
 import CreateBaseInfo from '@/features/recipe-admin/ui/CreateBaseInfo'
 import CreateI18nInfo from '@/features/recipe-admin/ui/CreateI18nInfo'
 import CreateAliasInfo from '@/features/recipe-admin/ui/CreateAliasInfo'
+import CreateIngredientInfo from '@/features/recipe-admin/ui/CreateIngredientInfo'
+import IngredientSelectPopup from '@/features/ingredient-admin/ui/IngredientSelectPopup'
 
 const RecipeFormPage = () => {
   const searchParams = useSearchParams()
@@ -143,9 +145,17 @@ const RecipeFormPage = () => {
                 />
               </div>
             )}
+
+            {/* 재료 섹션 */}
+            {recipeId && (
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+                <CreateIngredientInfo recipeId={recipeId} />
+              </div>
+            )}
           </div>
         )}
       </div>
+      <IngredientSelectPopup />
     </div>
   )
 }

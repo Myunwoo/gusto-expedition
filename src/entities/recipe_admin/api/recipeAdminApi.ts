@@ -13,6 +13,12 @@ import type {
   CreateAliasResDto,
   UpdateAliasAllReqDto,
   UpdateAliasAllResDto,
+  SelectRecipeIngredientListItemDto,
+  CreateRecipeIngredientReqDto,
+  CreateRecipeIngredientResDto,
+  UpdateRecipeIngredientReqDto,
+  UpdateRecipeIngredientResDto,
+  DeleteRecipeIngredientResDto,
 } from '../model/types';
 
 /**
@@ -74,6 +80,34 @@ export const recipeAdminApi = {
    */
   updateAliasAll: (data: UpdateAliasAllReqDto): Promise<UpdateAliasAllResDto> => {
     return apiClient.post('/admin/recipe/updateAliasAll', data);
+  },
+
+  /**
+   * 레시피 재료 목록 조회
+   */
+  selectRecipeIngredientsByRecipeId: (recipeId: number): Promise<SelectRecipeIngredientListItemDto[]> => {
+    return apiClient.get(`/admin/recipe/selectRecipeIngredientsByRecipeId?recipeId=${recipeId}`);
+  },
+
+  /**
+   * 레시피 재료 추가
+   */
+  createRecipeIngredient: (data: CreateRecipeIngredientReqDto): Promise<CreateRecipeIngredientResDto> => {
+    return apiClient.post('/admin/recipe/createRecipeIngredient', data);
+  },
+
+  /**
+   * 레시피 재료 수정
+   */
+  updateRecipeIngredient: (data: UpdateRecipeIngredientReqDto): Promise<UpdateRecipeIngredientResDto> => {
+    return apiClient.post('/admin/recipe/updateRecipeIngredient', data);
+  },
+
+  /**
+   * 레시피 재료 삭제
+   */
+  deleteRecipeIngredient: (recipeIngredientId: number): Promise<DeleteRecipeIngredientResDto> => {
+    return apiClient.post(`/admin/recipe/deleteRecipeIngredient?recipeIngredientId=${recipeIngredientId}`);
   },
 };
 
