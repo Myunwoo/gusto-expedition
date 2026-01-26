@@ -35,6 +35,7 @@ export const useRecipeFormData = ({
   // Step별 데이터
   const [baseInfoData, setBaseInfoData] = useState<CreateBaseInfoData>({
     title: '',
+    source: '',
   })
 
   const [i18nAliasInfoData, setI18nAliasInfoData] = useState<CreateI18nAliasInfoData>({
@@ -80,6 +81,7 @@ const initializeFormData = (
   // 기본정보 데이터 초기화
   setBaseInfoData({
     title: existingData.title || '',
+    source: existingData.source || '',
   })
 
   // 다국어 + 별칭 데이터 초기화

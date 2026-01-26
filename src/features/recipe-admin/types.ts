@@ -5,6 +5,7 @@
 // 기본정보 데이터
 export interface CreateBaseInfoData {
   title: string;
+  source: string;
 }
 
 // 다국어 + 별칭 정보 데이터

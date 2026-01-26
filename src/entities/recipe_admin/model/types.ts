@@ -14,12 +14,14 @@ export interface SelectRecipeListItemDto {
 // 레시피 생성 요청
 export interface CreateRecipeReqDto {
   title: string;
+  source?: string;
 }
 
 // 레시피 생성 응답
 export interface CreateRecipeResDto {
   recipeId: number;
   title: string;
+  source?: string;
   createdAt: string;
 }
 
@@ -27,12 +29,14 @@ export interface CreateRecipeResDto {
 export interface UpdateRecipeReqDto {
   recipeId: number;
   title: string;
+  source?: string;
 }
 
 // 레시피 수정 응답
 export interface UpdateRecipeResDto {
   recipeId: number;
   title: string;
+  source?: string;
   updatedAt: string;
 }
 
@@ -106,6 +110,7 @@ export interface UpdateAliasAllResDto {
 export interface SelectRecipeResDto {
   recipeId: number;
   title: string;
+  source?: string;
   localeInfo: Record<string, RecipeLocaleInfoDto>;
   aliases: Record<string, RecipeAliasDto[]>;
   requiredIngredientIds: number[];
