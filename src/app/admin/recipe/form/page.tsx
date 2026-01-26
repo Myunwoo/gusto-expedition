@@ -2,73 +2,69 @@
 
 import { useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { useIngredientFormData } from '@/features/ingredient-admin/hooks/useIngredientFormData'
+import { useRecipeFormData } from '@/features/recipe-admin/hooks/useRecipeFormData'
 import {
-  useCreateIngredient,
-  useUpdateIngredient,
-  useUpdateIngredientI18n,
+  useCreateRecipe,
+  useUpdateRecipe,
+  useUpdateRecipeI18n,
   useCreateAlias,
   useUpdateAliasAll,
-} from '@/entities/ingredient_admin/api/ingredientAdminQueries'
+} from '@/entities/recipe_admin/api/recipeAdminQueries'
 import type {
-  CreateIngredientBasicReqDto,
-  UpdateIngredientBasicReqDto,
-  UpdateIngredientI18nReqDto,
+  CreateRecipeReqDto,
+  UpdateRecipeReqDto,
+  UpdateRecipeI18nReqDto,
   CreateAliasReqDto,
   UpdateAliasAllReqDto,
-} from '@/entities/ingredient_admin/model/types'
-import CreateBaseInfo from '@/features/ingredient-admin/ui/CreateBaseInfo'
-import CreateI18nInfo from '@/features/ingredient-admin/ui/CreateI18nInfo'
-import CreateAliasInfo from '@/features/ingredient-admin/ui/CreateAliasInfo'
-import CreateEdgeInfo from '@/features/ingredient-admin/ui/CreateEdgeInfo'
-import IngredientSelectPopup from '@/features/ingredient-admin/ui/IngredientSelectPopup'
+} from '@/entities/recipe_admin/model/types'
+import CreateBaseInfo from '@/features/recipe-admin/ui/CreateBaseInfo'
+import CreateI18nInfo from '@/features/recipe-admin/ui/CreateI18nInfo'
+import CreateAliasInfo from '@/features/recipe-admin/ui/CreateAliasInfo'
 
-const IngredientFormPage = () => {
+const RecipeFormPage = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
   // 수정 모드인지 확인
   const editId = searchParams.get('id') ? Number(searchParams.get('id')) : null
   const isEditMode = editId !== null
-  const [ingredientId, setIngredientId] = useState<number | null>(editId)
+  const [recipeId, setRecipeId] = useState<number | null>(editId)
 
   // 폼 데이터 관리
   const {
     baseInfoData,
     i18nAliasInfoData,
-    edgeInfoData,
     setBaseInfoData,
     setI18nAliasInfoData,
-    setEdgeInfoData,
     isLoadingData,
     originalAliases,
-  } = useIngredientFormData({ editId, isEditMode })
+  } = useRecipeFormData({ editId, isEditMode })
 
   // Mutations
-  const createIngredientMutation = useCreateIngredient()
-  const updateIngredientMutation = useUpdateIngredient()
-  const updateI18nMutation = useUpdateIngredientI18n()
+  const createRecipeMutation = useCreateRecipe()
+  const updateRecipeMutation = useUpdateRecipe()
+  const updateI18nMutation = useUpdateRecipeI18n()
   const createAliasMutation = useCreateAlias()
   const updateAliasAllMutation = useUpdateAliasAll()
 
-  const isLoadingBaseInfo = createIngredientMutation.isPending || updateIngredientMutation.isPending
+  const isLoadingBaseInfo = createRecipeMutation.isPending || updateRecipeMutation.isPending
   const isLoadingI18n = updateI18nMutation.isPending
   const isLoadingAlias = createAliasMutation.isPending || updateAliasAllMutation.isPending
 
   // 기본정보 저장 핸들러
-  const handleSaveBaseInfo = async (data: CreateIngredientBasicReqDto | UpdateIngredientBasicReqDto) => {
-    if ('ingredientId' in data) {
+  const handleSaveBaseInfo = async (data: CreateRecipeReqDto | UpdateRecipeReqDto) => {
+    if ('recipeId' in data) {
       // Update
-      await updateIngredientMutation.mutateAsync(data)
+      await updateRecipeMutation.mutateAsync(data)
     } else {
       // Create
-      const response = await createIngredientMutation.mutateAsync(data)
-      setIngredientId(response.ingredientId)
+      const response = await createRecipeMutation.mutateAsync(data)
+      setRecipeId(response.recipeId)
     }
   }
 
   // i18n 저장 핸들러 (upsert: 없으면 생성, 있으면 수정)
-  const handleSaveI18n = async (data: UpdateIngredientI18nReqDto) => {
+  const handleSaveI18n = async (data: UpdateRecipeI18nReqDto) => {
     await updateI18nMutation.mutateAsync(data)
   }
 
@@ -81,7 +77,6 @@ const IngredientFormPage = () => {
     }
   }
 
-
   return (
     <div className="min-h-dvh bg-gray-50 dark:bg-gray-900">
       <div className="max-w-6xl mx-auto p-8">
@@ -89,10 +84,10 @@ const IngredientFormPage = () => {
         <div className="mb-6">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {isEditMode ? '재료 수정' : '재료 등록'}
+              {isEditMode ? '레시피 수정' : '레시피 등록'}
             </h1>
             <button
-              onClick={() => router.push('/admin/ingredient')}
+              onClick={() => router.push('/admin/recipe')}
               className="px-4 py-2 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors"
             >
               목록으로
@@ -114,20 +109,20 @@ const IngredientFormPage = () => {
                 data={baseInfoData}
                 onChange={setBaseInfoData}
                 isEditMode={isEditMode}
-                ingredientId={ingredientId}
+                recipeId={recipeId}
                 onSave={handleSaveBaseInfo}
                 isLoading={isLoadingBaseInfo}
               />
             </div>
 
             {/* 다국어 정보 섹션 */}
-            {(isEditMode || ingredientId) && (
+            {recipeId && (
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
                 <CreateI18nInfo
                   data={i18nAliasInfoData}
                   onChange={setI18nAliasInfoData}
                   isEditMode={isEditMode}
-                  ingredientId={ingredientId}
+                  recipeId={recipeId}
                   onSave={handleSaveI18n}
                   isLoading={isLoadingI18n}
                 />
@@ -135,36 +130,25 @@ const IngredientFormPage = () => {
             )}
 
             {/* 별칭 섹션 */}
-            {(isEditMode || ingredientId) && (
+            {recipeId && (
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
                 <CreateAliasInfo
                   data={i18nAliasInfoData}
                   onChange={setI18nAliasInfoData}
                   isEditMode={isEditMode}
-                  ingredientId={ingredientId}
+                  recipeId={recipeId}
                   originalAliases={originalAliases}
                   onSave={handleSaveAlias}
                   isLoading={isLoadingAlias}
                 />
               </div>
             )}
-
-            {/* 관계 정보 섹션 - 수정 모드에서만 표시 및 조작 가능 */}
-            {isEditMode && ingredientId && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                <CreateEdgeInfo
-                  ingredientId={ingredientId}
-                  data={edgeInfoData}
-                  onChange={setEdgeInfoData}
-                />
-              </div>
-            )}
           </div>
         )}
       </div>
-      <IngredientSelectPopup />
     </div>
   )
 }
 
-export default IngredientFormPage
+export default RecipeFormPage
+

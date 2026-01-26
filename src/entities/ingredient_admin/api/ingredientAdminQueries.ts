@@ -120,3 +120,18 @@ export const useUpdateAliasAll = () => {
     retry: false,
   });
 };
+
+/**
+ * 재료 삭제 Mutation
+ */
+export const useDeleteIngredient = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => ingredientAdminApi.deleteIngredient(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ingredientAdminKeys.lists() });
+    },
+    retry: false,
+  });
+};

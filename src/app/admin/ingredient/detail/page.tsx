@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-// import { usePopupStore } from '@/shared/hooks/store/popupStore'
-import { useIngredientAdmin } from '@/entities/ingredient_admin/api/ingredientAdminQueries'
+import { usePopupStore } from '@/shared/hooks/store/popupStore'
+import { useIngredientAdmin, useDeleteIngredient } from '@/entities/ingredient_admin/api/ingredientAdminQueries'
 import type { SelectIngredientResDto } from '@/entities/ingredient_admin/model/types'
 import { DEFAULT_LOCALE } from '@/shared/config/locales'
 
@@ -11,11 +11,10 @@ export default function IngredientDetailPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const ingredientId = searchParams.get('id') ? Number(searchParams.get('id')) : null
-  // const [isEditMode, setIsEditMode] = useState(false)
-  // const [isDirty, setIsDirty] = useState(false)
-  // const popupStore = usePopupStore()
+  const popupStore = usePopupStore()
 
   const { data: ingredient, isLoading } = useIngredientAdmin(ingredientId ?? 0)
+  const deleteIngredientMutation = useDeleteIngredient()
 
   useEffect(() => {
     if (!ingredientId) {
@@ -25,68 +24,53 @@ export default function IngredientDetailPage() {
     }
   }, [ingredientId, router])
 
-  // 편집 관련 함수들 - 주석 처리
-  // const handleEdit = () => {
-  //   if (ingredient) {
-  //     setFormData(JSON.parse(JSON.stringify(ingredient))) // Deep copy
-  //     setIsEditMode(true)
-  //   }
-  // }
+  const handleEdit = () => {
+    if (ingredientId) {
+      router.push(`/admin/ingredient/form?id=${ingredientId}`)
+    }
+  }
 
-  // const handleCancel = () => {
-  //   if (isDirty) {
-  //     popupStore.open({
-  //       id: 'commonConfirmPopup',
-  //       data: {
-  //         title: '변경사항 취소',
-  //         content: '저장되지 않은 변경사항이 있습니다. 정말 취소하시겠습니까?',
-  //         buttonOneText: '계속 편집',
-  //         buttonTwoText: '취소',
-  //         onCancel: () => {
-  //           // 계속 편집 - 아무것도 안 함
-  //         },
-  //         onConfirm: () => {
-  //           setIsEditMode(false)
-  //           setIsDirty(false)
-  //           setFormData(null)
-  //         },
-  //       },
-  //     })
-  //   } else {
-  //     setIsEditMode(false)
-  //     setFormData(null)
-  //   }
-  // }
+  const deleteIngredient = async (ingredientId: number) => {
+    try {
+      await deleteIngredientMutation.mutateAsync(ingredientId)
+      popupStore.close()
+      popupStore.open({
+        id: 'commonAlertPopup',
+        data: {
+          title: '삭제 완료',
+          content: '재료가 성공적으로 삭제되었습니다.',
+          onConfirm: () => {
+            router.push('/admin/ingredient')
+          },
+        },
+      })
+    } catch {
+      popupStore.open({
+        id: 'commonAlertPopup',
+        data: {
+          title: '삭제 실패',
+          content: '재료 삭제 중 오류가 발생했습니다.',
+        },
+      })
+    }
+  }
 
-  // const handleSave = async () => {
-  //   if (!ingredientId || !formData) return
-  //   // TODO: API 호출
-  //   // await ingredientApi.updateIngredient(ingredientId, formData)
-  //   setIsEditMode(false)
-  //   setIsDirty(false)
-  //   // TODO: 데이터 새로고침
-  // }
-
-  // const handleDelete = () => {
-  //   if (!ingredientId) return
-  //   popupStore.open({
-  //     id: 'commonConfirmPopup',
-  //     data: {
-  //       title: '재료 삭제',
-  //       content: '이 재료를 삭제하시겠습니까?\n삭제된 재료는 복구할 수 없습니다.',
-  //       buttonOneText: '취소',
-  //       buttonTwoText: '삭제',
-  //       onCancel: () => {
-  //         // 취소
-  //       },
-  //       onConfirm: async () => {
-  //         // TODO: API 호출
-  //         // await ingredientApi.deleteIngredient(ingredientId)
-  //         router.push('/admin/ingredients')
-  //       },
-  //     },
-  //   })
-  // }
+  const handleDelete = () => {
+    if (!ingredientId) return
+    popupStore.open({
+      id: 'commonConfirmPopup',
+      data: {
+        title: '재료 삭제',
+        content: '이 재료를 삭제하시겠습니까?\n삭제된 재료는 복구할 수 없습니다.',
+        buttonOneText: '취소',
+        buttonTwoText: '삭제',
+        onConfirm: async () => {
+          popupStore.close()
+          deleteIngredient(ingredientId)
+        },
+      },
+    })
+  }
 
   if (!ingredientId) {
     return null
@@ -124,8 +108,13 @@ export default function IngredientDetailPage() {
                 {ingredient.name || '재료 상세'}
               </h1>
             </div>
-            {/* 편집/삭제 버튼 - 주석 처리 */}
-            {/* <div className="flex gap-3">
+            <div className="flex gap-3">
+              <button
+                onClick={() => router.push('/admin/ingredient')}
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors"
+              >
+                목록으로
+              </button>
               <button
                 onClick={handleEdit}
                 className="px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
@@ -134,11 +123,12 @@ export default function IngredientDetailPage() {
               </button>
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors"
+                disabled={deleteIngredientMutation.isPending}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                삭제
+                {deleteIngredientMutation.isPending ? '삭제 중...' : '삭제'}
               </button>
-            </div> */}
+            </div>
           </div>
         </div>
 
@@ -307,20 +297,6 @@ function I18nSection({
   )
 }
 
-// i18n 폼 컴포넌트 - 주석 처리 (편집 기능 제거)
-// function I18nForm({
-//   i18n,
-//   isEditMode,
-//   onDataChange,
-// }: {
-//   i18n: IngredientI18nDetail
-//   isEditMode: boolean
-//   onDataChange: (data: Partial<IngredientI18nDetail>) => void
-// }) {
-//   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
-//   ...
-// }
-
 // 관계 섹션 컴포넌트
 function RelationsSection({
   relatedIngredients,
@@ -416,18 +392,6 @@ function RelationsSection({
           </div>
         )}
       </div>
-
-      {/* 관계 추가 버튼 - 주석 처리 (편집 기능 제거) */}
-      {/* {isEditMode && (
-        <button
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-          onClick={() => {
-            console.log('관계 추가')
-          }}
-        >
-          관계 추가
-        </button>
-      )} */}
     </div>
   )
 }
