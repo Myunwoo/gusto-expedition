@@ -156,7 +156,30 @@ const CreateIngredientInfo = ({ recipeId }: CreateIngredientInfoProps) => {
         {!showAddForm && (
           <button
             onClick={() => setShowAddForm(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            style={{
+              padding: '12px 20px',
+              backgroundColor: 'var(--brass)',
+              color: '#ffffff',
+              borderRadius: 'var(--radius-button)',
+              fontSize: '14px',
+              fontWeight: 500,
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 180ms ease-out'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--brass-light)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--brass)'
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.outline = 'var(--focus-ring)'
+              e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.outline = 'none'
+            }}
           >
             재료 추가
           </button>
@@ -165,19 +188,68 @@ const CreateIngredientInfo = ({ recipeId }: CreateIngredientInfoProps) => {
 
       {/* 재료 추가 폼 */}
       {showAddForm && (
-        <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4">
-          <div className="flex items-center gap-2">
+        <div 
+          style={{
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-card)',
+            padding: 'var(--spacing-card)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px',
+            backgroundColor: 'var(--white)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <button
               onClick={handleOpenIngredientSelect}
-              className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-left hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+              style={{
+                flex: 1,
+                padding: '12px 16px',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-button)',
+                backgroundColor: 'var(--base-off-white)',
+                color: 'var(--ink-primary)',
+                fontSize: '14px',
+                lineHeight: 1.6,
+                textAlign: 'left',
+                cursor: 'pointer',
+                transition: 'all 180ms ease-out',
+                outline: 'none'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(176, 141, 87, 0.05)'
+                e.currentTarget.style.borderColor = 'var(--brass)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--base-off-white)'
+                e.currentTarget.style.borderColor = 'var(--border-default)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'var(--brass)'
+                e.currentTarget.style.outline = 'var(--focus-ring)'
+                e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-default)'
+                e.currentTarget.style.outline = 'none'
+              }}
             >
               {newIngredient.ingredientName || '재료 선택'}
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label 
+                style={{
+                  display: 'block',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: 'var(--ink-secondary)',
+                  marginBottom: '6px',
+                  lineHeight: 1.6
+                }}
+              >
                 역할
               </label>
               <select
@@ -185,7 +257,27 @@ const CreateIngredientInfo = ({ recipeId }: CreateIngredientInfoProps) => {
                 onChange={(e) =>
                   setNewIngredient({ ...newIngredient, role: e.target.value as RecipeIngredientRole })
                 }
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-button)',
+                  backgroundColor: 'var(--white)',
+                  color: 'var(--ink-primary)',
+                  fontSize: '14px',
+                  lineHeight: 1.6,
+                  outline: 'none',
+                  transition: 'all 180ms ease-out'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--brass)'
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-default)'
+                  e.currentTarget.style.outline = 'none'
+                }}
               >
                 <option value="REQUIRED">필수</option>
                 <option value="OPTIONAL">선택</option>
@@ -193,7 +285,16 @@ const CreateIngredientInfo = ({ recipeId }: CreateIngredientInfoProps) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label 
+                style={{
+                  display: 'block',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: 'var(--ink-secondary)',
+                  marginBottom: '6px',
+                  lineHeight: 1.6
+                }}
+              >
                 양
               </label>
               <input
@@ -201,12 +302,41 @@ const CreateIngredientInfo = ({ recipeId }: CreateIngredientInfoProps) => {
                 value={newIngredient.amount}
                 onChange={(e) => setNewIngredient({ ...newIngredient, amount: e.target.value })}
                 placeholder="예: 120"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-button)',
+                  backgroundColor: 'var(--white)',
+                  color: 'var(--ink-primary)',
+                  fontSize: '14px',
+                  lineHeight: 1.6,
+                  outline: 'none',
+                  transition: 'all 180ms ease-out'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--brass)'
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-default)'
+                  e.currentTarget.style.outline = 'none'
+                }}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label 
+                style={{
+                  display: 'block',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: 'var(--ink-secondary)',
+                  marginBottom: '6px',
+                  lineHeight: 1.6
+                }}
+              >
                 단위
               </label>
               <input
@@ -215,12 +345,41 @@ const CreateIngredientInfo = ({ recipeId }: CreateIngredientInfoProps) => {
                 onChange={(e) => setNewIngredient({ ...newIngredient, unit: e.target.value })}
                 placeholder="예: g"
                 maxLength={30}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-button)',
+                  backgroundColor: 'var(--white)',
+                  color: 'var(--ink-primary)',
+                  fontSize: '14px',
+                  lineHeight: 1.6,
+                  outline: 'none',
+                  transition: 'all 180ms ease-out'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--brass)'
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-default)'
+                  e.currentTarget.style.outline = 'none'
+                }}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label 
+                style={{
+                  display: 'block',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: 'var(--ink-secondary)',
+                  marginBottom: '6px',
+                  lineHeight: 1.6
+                }}
+              >
                 비고
               </label>
               <input
@@ -229,16 +388,66 @@ const CreateIngredientInfo = ({ recipeId }: CreateIngredientInfoProps) => {
                 onChange={(e) => setNewIngredient({ ...newIngredient, note: e.target.value })}
                 placeholder="예: 얇게 썬 것"
                 maxLength={255}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-button)',
+                  backgroundColor: 'var(--white)',
+                  color: 'var(--ink-primary)',
+                  fontSize: '14px',
+                  lineHeight: 1.6,
+                  outline: 'none',
+                  transition: 'all 180ms ease-out'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--brass)'
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-default)'
+                  e.currentTarget.style.outline = 'none'
+                }}
               />
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div style={{ display: 'flex', gap: '8px' }}>
             <button
               onClick={handleAddIngredient}
               disabled={createMutation.isPending}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+              style={{
+                padding: '12px 20px',
+                backgroundColor: createMutation.isPending ? 'var(--ink-muted)' : 'var(--brass)',
+                color: '#ffffff',
+                borderRadius: 'var(--radius-button)',
+                fontSize: '14px',
+                fontWeight: 500,
+                border: 'none',
+                cursor: createMutation.isPending ? 'not-allowed' : 'pointer',
+                opacity: createMutation.isPending ? 0.6 : 1,
+                transition: 'all 180ms ease-out'
+              }}
+              onMouseEnter={(e) => {
+                if (!createMutation.isPending) {
+                  e.currentTarget.style.backgroundColor = 'var(--brass-light)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!createMutation.isPending) {
+                  e.currentTarget.style.backgroundColor = 'var(--brass)'
+                }
+              }}
+              onFocus={(e) => {
+                if (!createMutation.isPending) {
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.outline = 'none'
+              }}
             >
               추가
             </button>
@@ -350,57 +559,230 @@ const IngredientItem = ({
 
   if (isEditing) {
     return (
-      <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-3">
-        <div className="font-medium text-gray-900 dark:text-gray-100">{ingredient.ingredientName}</div>
-        <div className="grid grid-cols-2 gap-3">
+      <div 
+        style={{
+          border: '1px solid var(--border-default)',
+          borderRadius: 'var(--radius-card)',
+          padding: 'var(--spacing-card)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          backgroundColor: 'var(--white)'
+        }}
+      >
+        <div 
+          style={{
+            fontSize: '15px',
+            fontWeight: 500,
+            color: 'var(--ink-primary)',
+            lineHeight: 1.6
+          }}
+        >
+          {ingredient.ingredientName}
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">역할</label>
+            <label 
+              style={{
+                display: 'block',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: 'var(--ink-secondary)',
+                marginBottom: '6px',
+                lineHeight: 1.6
+              }}
+            >
+              역할
+            </label>
             <select
               value={editIngredient.role}
               onChange={(e) =>
                 setEditIngredient({ ...editIngredient, role: e.target.value as RecipeIngredientRole })
               }
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-button)',
+                backgroundColor: 'var(--white)',
+                color: 'var(--ink-primary)',
+                fontSize: '14px',
+                lineHeight: 1.6,
+                outline: 'none',
+                transition: 'all 180ms ease-out'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'var(--brass)'
+                e.currentTarget.style.outline = 'var(--focus-ring)'
+                e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-default)'
+                e.currentTarget.style.outline = 'none'
+              }}
             >
               <option value="REQUIRED">필수</option>
               <option value="OPTIONAL">선택</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">양</label>
+            <label 
+              style={{
+                display: 'block',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: 'var(--ink-secondary)',
+                marginBottom: '6px',
+                lineHeight: 1.6
+              }}
+            >
+              양
+            </label>
             <input
               type="text"
               value={editIngredient.amount}
               onChange={(e) => setEditIngredient({ ...editIngredient, amount: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-button)',
+                backgroundColor: 'var(--white)',
+                color: 'var(--ink-primary)',
+                fontSize: '14px',
+                lineHeight: 1.6,
+                outline: 'none',
+                transition: 'all 180ms ease-out'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'var(--brass)'
+                e.currentTarget.style.outline = 'var(--focus-ring)'
+                e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-default)'
+                e.currentTarget.style.outline = 'none'
+              }}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">단위</label>
+            <label 
+              style={{
+                display: 'block',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: 'var(--ink-secondary)',
+                marginBottom: '6px',
+                lineHeight: 1.6
+              }}
+            >
+              단위
+            </label>
             <input
               type="text"
               value={editIngredient.unit}
               onChange={(e) => setEditIngredient({ ...editIngredient, unit: e.target.value })}
               maxLength={30}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-button)',
+                backgroundColor: 'var(--white)',
+                color: 'var(--ink-primary)',
+                fontSize: '14px',
+                lineHeight: 1.6,
+                outline: 'none',
+                transition: 'all 180ms ease-out'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'var(--brass)'
+                e.currentTarget.style.outline = 'var(--focus-ring)'
+                e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-default)'
+                e.currentTarget.style.outline = 'none'
+              }}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">비고</label>
+            <label 
+              style={{
+                display: 'block',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: 'var(--ink-secondary)',
+                marginBottom: '6px',
+                lineHeight: 1.6
+              }}
+            >
+              비고
+            </label>
             <input
               type="text"
               value={editIngredient.note}
               onChange={(e) => setEditIngredient({ ...editIngredient, note: e.target.value })}
               maxLength={255}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-button)',
+                backgroundColor: 'var(--white)',
+                color: 'var(--ink-primary)',
+                fontSize: '14px',
+                lineHeight: 1.6,
+                outline: 'none',
+                transition: 'all 180ms ease-out'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'var(--brass)'
+                e.currentTarget.style.outline = 'var(--focus-ring)'
+                e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-default)'
+                e.currentTarget.style.outline = 'none'
+              }}
             />
           </div>
         </div>
-        <div className="flex gap-2">
+        <div style={{ display: 'flex', gap: '8px' }}>
           <button
             onClick={() => onUpdate(ingredient.recipeIngredientId)}
             disabled={isUpdating}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+            style={{
+              padding: '12px 20px',
+              backgroundColor: isUpdating ? 'var(--ink-muted)' : 'var(--brass)',
+              color: '#ffffff',
+              borderRadius: 'var(--radius-button)',
+              fontSize: '14px',
+              fontWeight: 500,
+              border: 'none',
+              cursor: isUpdating ? 'not-allowed' : 'pointer',
+              opacity: isUpdating ? 0.6 : 1,
+              transition: 'all 180ms ease-out'
+            }}
+            onMouseEnter={(e) => {
+              if (!isUpdating) {
+                e.currentTarget.style.backgroundColor = 'var(--brass-light)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isUpdating) {
+                e.currentTarget.style.backgroundColor = 'var(--brass)'
+              }
+            }}
+            onFocus={(e) => {
+              if (!isUpdating) {
+                e.currentTarget.style.outline = 'var(--focus-ring)'
+                e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+              }
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.outline = 'none'
+            }}
           >
             저장
           </button>

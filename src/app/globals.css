@@ -3,6 +3,45 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  
+  /* Design Guide: 3-Layer Background System */
+  --base-off-white: #FAF8F4; /* Base Off-White (주 배경) */
+  --white: #FFFFFF; /* Pure White (카드/패널/입력 배경) */
+  --sand-layer: #E9E1D4; /* Sand Layer (포인트 섹션 헤더 배경) */
+  --warm-gray-texture: #D6D1C8; /* Warm Gray Texture Layer (특정 강조 섹션 배경) */
+  
+  /* Text Colors (WCAG AA 대비 확보) */
+  --ink-primary: #1E1D1B; /* 차콜 - Primary Ink */
+  --ink-secondary: #3E3A34; /* Secondary Ink */
+  --ink-muted: #60584E; /* Muted (너무 옅지 않게) */
+  
+  /* Accent Colors */
+  --brass: #B08D57;
+  --brass-light: #C2A26A;
+  --terracotta: #B4573A;
+  --terracotta-light: #C06A4E;
+  
+  /* UI Lines / Borders (명확한 대비) */
+  --border-default: rgba(30, 29, 27, 0.18); /* 기본선 */
+  --border-strong: rgba(30, 29, 27, 0.28); /* 카드/입력 강조 */
+  --border-on-dark: rgba(246, 241, 232, 0.22); /* 어두운 배경 위 */
+  --divider-default: rgba(30, 29, 27, 0.14); /* 기본 Divider */
+  --divider-on-dark: rgba(245, 240, 232, 0.18); /* 어두운 배경 위 Divider */
+  
+  /* Shadow */
+  --shadow-soft: rgba(28, 27, 25, 0.06);
+  
+  /* Spacing (Design Guide) */
+  --spacing-section: 96px; /* 72~120px 중간값 */
+  --spacing-card: 24px; /* 20~28px 중간값 */
+  
+  /* Border Radius */
+  --radius-card: 18px; /* 16~20 중간값 */
+  --radius-button: 16px; /* 14~18 중간값 */
+  
+  /* Focus Ring (접근성 강화) */
+  --focus-ring: 2px solid var(--brass);
+  --focus-ring-offset: 2px;
 }
 
 @theme inline {
@@ -12,11 +51,30 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Dark Mode Variables */
+[data-theme="dark"] {
+  /* Background (Dark Base) */
+  --base-off-white: #121110; /* 웜 차콜 베이스, 페이지 기본 배경 */
+  --white: #191715; /* 카드/패널 배경 */
+  --sand-layer: #211E1B; /* 강조 패널/모달 배경 */
+  --warm-gray-texture: #2A2622; /* 특정 강조 섹션 배경 */
+  
+  /* Text (Warm Light Ink) */
+  --ink-primary: #F2EBDD; /* 아이보리, 본문 */
+  --ink-secondary: #CFC6B6;
+  --ink-muted: #A89F90; /* 본문에 남발 금지 */
+  
+  /* UI Lines / Borders (Visibility 유지) */
+  --border-default: rgba(242, 235, 221, 0.16); /* 1px 이상 */
+  --border-strong: rgba(242, 235, 221, 0.26);
+  --divider-default: rgba(242, 235, 221, 0.12);
+  
+  /* Shadow (다크 모드에서는 더 약하게) */
+  --shadow-soft: rgba(0, 0, 0, 0.2);
+  
+  /* Background/Foreground (기존 변수 유지) */
+  --background: #121110;
+  --foreground: #F2EBDD;
 }
 
 body {

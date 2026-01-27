@@ -62,32 +62,86 @@ const CreateI18nInfo = ({
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <h2 
+        style={{
+          fontSize: '18px',
+          fontWeight: 500,
+          color: 'var(--ink-primary)',
+          letterSpacing: '-0.01em',
+          lineHeight: 1.4
+        }}
+      >
         다국어 정보
       </h2>
 
       {/* 언어 탭 */}
-      <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700">
-        {availableLocales.map((locale) => (
-          <button
-            key={locale}
-            onClick={() => setSelectedLocale(locale)}
-            className={`px-4 py-2 font-medium text-sm transition-colors ${selectedLocale === locale
-              ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-              }`}
-          >
-            {locale}
-          </button>
-        ))}
+      <div 
+        style={{
+          display: 'flex',
+          gap: '8px',
+          borderBottom: '1px solid var(--divider-default)'
+        }}
+      >
+        {availableLocales.map((locale) => {
+          const isActive = selectedLocale === locale
+          return (
+            <button
+              key={locale}
+              onClick={() => setSelectedLocale(locale)}
+              style={{
+                padding: '8px 16px',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: isActive ? 'var(--brass)' : 'var(--ink-secondary)',
+                borderBottom: isActive ? '2px solid var(--brass)' : '2px solid transparent',
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderTop: 'none',
+                borderLeft: 'none',
+                borderRight: 'none',
+                cursor: 'pointer',
+                transition: 'all 180ms ease-out',
+                marginBottom: '-1px'
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.color = 'var(--ink-primary)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.color = 'var(--ink-secondary)'
+                }
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.outline = 'var(--focus-ring)'
+                e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.outline = 'none'
+              }}
+            >
+              {locale}
+            </button>
+          )
+        })}
       </div>
 
       {/* 선택된 언어의 입력 폼 */}
-      <div className="space-y-4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            이름 <span className="text-red-500">*</span>
+          <label 
+            style={{
+              display: 'block',
+              fontSize: '13px',
+              fontWeight: 500,
+              color: 'var(--ink-secondary)',
+              marginBottom: '6px',
+              lineHeight: 1.6
+            }}
+          >
+            이름 <span style={{ color: 'var(--terracotta)' }}>*</span>
           </label>
           <input
             type="text"
@@ -96,12 +150,41 @@ const CreateI18nInfo = ({
               updateLocaleData(selectedLocale, { name: e.target.value })
             }
             placeholder={`${selectedLocale} 이름을 입력하세요`}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              border: '1px solid var(--border-default)',
+              borderRadius: 'var(--radius-button)',
+              backgroundColor: 'var(--white)',
+              color: 'var(--ink-primary)',
+              fontSize: '14px',
+              lineHeight: 1.6,
+              outline: 'none',
+              transition: 'all 180ms ease-out'
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = 'var(--brass)'
+              e.currentTarget.style.outline = 'var(--focus-ring)'
+              e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-default)'
+              e.currentTarget.style.outline = 'none'
+            }}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label 
+            style={{
+              display: 'block',
+              fontSize: '13px',
+              fontWeight: 500,
+              color: 'var(--ink-secondary)',
+              marginBottom: '6px',
+              lineHeight: 1.6
+            }}
+          >
             설명
           </label>
           <textarea
@@ -111,16 +194,78 @@ const CreateI18nInfo = ({
             }
             placeholder="재료에 대한 설명을 입력하세요"
             rows={6}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              border: '1px solid var(--border-default)',
+              borderRadius: 'var(--radius-button)',
+              backgroundColor: 'var(--white)',
+              color: 'var(--ink-primary)',
+              fontSize: '14px',
+              lineHeight: 1.6,
+              outline: 'none',
+              resize: 'vertical',
+              transition: 'all 180ms ease-out'
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = 'var(--brass)'
+              e.currentTarget.style.outline = 'var(--focus-ring)'
+              e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-default)'
+              e.currentTarget.style.outline = 'none'
+            }}
           />
         </div>
       </div>
 
-      <div className="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+      <div 
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          paddingTop: '20px',
+          borderTop: '1px solid var(--divider-default)'
+        }}
+      >
         <button
           onClick={handleSave}
           disabled={isLoading || !ingredientId || !currentLocaleData.name.trim()}
-          className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed rounded-lg transition-colors"
+          style={{
+            padding: '12px 24px',
+            backgroundColor: (isLoading || !ingredientId || !currentLocaleData.name.trim()) 
+              ? 'var(--ink-muted)' 
+              : 'var(--brass)',
+            color: '#ffffff',
+            borderRadius: 'var(--radius-button)',
+            fontSize: '14px',
+            fontWeight: 500,
+            border: 'none',
+            cursor: (isLoading || !ingredientId || !currentLocaleData.name.trim()) 
+              ? 'not-allowed' 
+              : 'pointer',
+            opacity: (isLoading || !ingredientId || !currentLocaleData.name.trim()) ? 0.6 : 1,
+            transition: 'all 180ms ease-out'
+          }}
+          onMouseEnter={(e) => {
+            if (!isLoading && ingredientId && currentLocaleData.name.trim()) {
+              e.currentTarget.style.backgroundColor = 'var(--brass-light)'
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isLoading && ingredientId && currentLocaleData.name.trim()) {
+              e.currentTarget.style.backgroundColor = 'var(--brass)'
+            }
+          }}
+          onFocus={(e) => {
+            if (!isLoading && ingredientId && currentLocaleData.name.trim()) {
+              e.currentTarget.style.outline = 'var(--focus-ring)'
+              e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+            }
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.outline = 'none'
+          }}
         >
           {isLoading ? '저장 중...' : isEditMode ? '수정' : '등록'} ({selectedLocale})
         </button>

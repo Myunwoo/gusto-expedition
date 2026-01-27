@@ -104,14 +104,49 @@ const CreateEdgeInfo = ({
   ]
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <h2 
+          style={{
+            fontSize: '18px',
+            fontWeight: 500,
+            color: 'var(--ink-primary)',
+            letterSpacing: '-0.01em',
+            lineHeight: 1.4
+          }}
+        >
           관계 조작
         </h2>
         <button
           onClick={() => setShowAddRelation(!showAddRelation)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
+          style={{
+            padding: '12px 20px',
+            backgroundColor: showAddRelation ? 'var(--ink-muted)' : 'var(--brass)',
+            color: '#ffffff',
+            borderRadius: 'var(--radius-button)',
+            fontSize: '14px',
+            fontWeight: 500,
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 180ms ease-out'
+          }}
+          onMouseEnter={(e) => {
+            if (!showAddRelation) {
+              e.currentTarget.style.backgroundColor = 'var(--brass-light)'
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!showAddRelation) {
+              e.currentTarget.style.backgroundColor = 'var(--brass)'
+            }
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.outline = 'var(--focus-ring)'
+            e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.outline = 'none'
+          }}
         >
           {showAddRelation ? '취소' : '관계 추가'}
         </button>
@@ -119,24 +154,86 @@ const CreateEdgeInfo = ({
 
       {/* 관계 추가 폼 */}
       {showAddRelation && (
-        <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4">
+        <div 
+          style={{
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-card)',
+            padding: 'var(--spacing-card)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px',
+            backgroundColor: 'var(--white)'
+          }}
+        >
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label 
+              style={{
+                display: 'block',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: 'var(--ink-secondary)',
+                marginBottom: '6px',
+                lineHeight: 1.6
+              }}
+            >
               대상 재료 (to)
             </label>
-            <div className="flex gap-2">
+            <div style={{ display: 'flex', gap: '8px' }}>
               <input
                 type="text"
                 value={newRelation.toIngredientName}
                 readOnly
                 placeholder="재료를 선택하세요"
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 cursor-pointer"
+                style={{
+                  flex: 1,
+                  padding: '12px 16px',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-button)',
+                  backgroundColor: 'var(--base-off-white)',
+                  color: 'var(--ink-primary)',
+                  fontSize: '14px',
+                  lineHeight: 1.6,
+                  cursor: 'pointer',
+                  outline: 'none'
+                }}
                 onClick={handleOpenIngredientSelect}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--brass)'
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-default)'
+                  e.currentTarget.style.outline = 'none'
+                }}
               />
               <button
                 type="button"
                 onClick={handleOpenIngredientSelect}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
+                style={{
+                  padding: '12px 20px',
+                  backgroundColor: 'var(--brass)',
+                  color: '#ffffff',
+                  borderRadius: 'var(--radius-button)',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 180ms ease-out'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--brass-light)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--brass)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = 'none'
+                }}
               >
                 선택
               </button>
@@ -144,7 +241,16 @@ const CreateEdgeInfo = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label 
+              style={{
+                display: 'block',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: 'var(--ink-secondary)',
+                marginBottom: '6px',
+                lineHeight: 1.6
+              }}
+            >
               관계 타입
             </label>
             <select
@@ -155,7 +261,27 @@ const CreateEdgeInfo = ({
                   relationType: e.target.value as IngredientRelationType,
                 })
               }
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-button)',
+                backgroundColor: 'var(--white)',
+                color: 'var(--ink-primary)',
+                fontSize: '14px',
+                lineHeight: 1.6,
+                outline: 'none',
+                transition: 'all 180ms ease-out'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'var(--brass)'
+                e.currentTarget.style.outline = 'var(--focus-ring)'
+                e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-default)'
+                e.currentTarget.style.outline = 'none'
+              }}
             >
               {relationTypes.map((type) => (
                 <option key={type.value} value={type.value}>
@@ -168,8 +294,17 @@ const CreateEdgeInfo = ({
           {/* 점수 입력 필드: NEUTRAL이 아닐 때만 표시 */}
           {newRelation.relationType !== 'NEUTRAL' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                점수 (1-10) <span className="text-red-500">*</span>
+              <label 
+                style={{
+                  display: 'block',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: 'var(--ink-secondary)',
+                  marginBottom: '6px',
+                  lineHeight: 1.6
+                }}
+              >
+                점수 (1-10) <span style={{ color: 'var(--terracotta)' }}>*</span>
               </label>
               <input
                 type="text"
@@ -192,13 +327,42 @@ const CreateEdgeInfo = ({
                   }
                 }}
                 placeholder="1-10 사이의 숫자를 입력하세요"
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-button)',
+                  backgroundColor: 'var(--white)',
+                  color: 'var(--ink-primary)',
+                  fontSize: '14px',
+                  lineHeight: 1.6,
+                  outline: 'none',
+                  transition: 'all 180ms ease-out'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--brass)'
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-default)'
+                  e.currentTarget.style.outline = 'none'
+                }}
               />
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label 
+              style={{
+                display: 'block',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: 'var(--ink-secondary)',
+                marginBottom: '6px',
+                lineHeight: 1.6
+              }}
+            >
               근거 메모
             </label>
             <textarea
@@ -208,13 +372,58 @@ const CreateEdgeInfo = ({
               }
               placeholder="관계의 근거를 입력하세요"
               rows={4}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-button)',
+                backgroundColor: 'var(--white)',
+                color: 'var(--ink-primary)',
+                fontSize: '14px',
+                lineHeight: 1.6,
+                outline: 'none',
+                resize: 'vertical',
+                transition: 'all 180ms ease-out'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'var(--brass)'
+                e.currentTarget.style.outline = 'var(--focus-ring)'
+                e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-default)'
+                e.currentTarget.style.outline = 'none'
+              }}
             />
           </div>
 
           <button
             onClick={handleAddRelation}
-            className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
+            style={{
+              width: '100%',
+              padding: '12px 24px',
+              backgroundColor: 'var(--brass)',
+              color: '#ffffff',
+              borderRadius: 'var(--radius-button)',
+              fontSize: '14px',
+              fontWeight: 500,
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 180ms ease-out'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--brass-light)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--brass)'
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.outline = 'var(--focus-ring)'
+              e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.outline = 'none'
+            }}
           >
             관계 추가
           </button>
@@ -222,31 +431,63 @@ const CreateEdgeInfo = ({
       )}
 
       {/* 관계 리스트 */}
-      <div className="space-y-4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {data.relations.length === 0 ? (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+          <div 
+            style={{
+              textAlign: 'center',
+              padding: '32px 16px',
+              color: 'var(--ink-muted)',
+              fontSize: '13px',
+              lineHeight: 1.6
+            }}
+          >
             등록된 관계가 없습니다.
           </div>
         ) : (
           data.relations.map((relation, index) => (
             <div
               key={index}
-              className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
+              style={{
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-button)',
+                padding: '16px',
+                backgroundColor: 'var(--white)'
+              }}
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-gray-100">
-                    {relation.toIngredientName}
+              <div>
+                <p 
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    color: 'var(--ink-primary)',
+                    lineHeight: 1.6,
+                    marginBottom: '6px'
+                  }}
+                >
+                  {relation.toIngredientName}
+                </p>
+                <p 
+                  style={{
+                    fontSize: '13px',
+                    color: 'var(--ink-muted)',
+                    lineHeight: 1.6
+                  }}
+                >
+                  타입: {relation.relationType === 'PAIR_WELL' ? '궁합' : relation.relationType === 'AVOID' ? '비궁합' : '중립'} | 점수: {relation.score}
+                </p>
+                {relation.reasonSummary && (
+                  <p 
+                    style={{
+                      fontSize: '13px',
+                      color: 'var(--ink-muted)',
+                      marginTop: '6px',
+                      lineHeight: 1.6
+                    }}
+                  >
+                    {relation.reasonSummary}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    타입: {relation.relationType === 'PAIR_WELL' ? '궁합' : relation.relationType === 'AVOID' ? '비궁합' : '중립'} | 점수: {relation.score}
-                  </p>
-                  {relation.reasonSummary && (
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      {relation.reasonSummary}
-                    </p>
-                  )}
-                </div>
+                )}
               </div>
             </div>
           ))

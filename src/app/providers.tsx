@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { redirectToLogin } from '@/shared/lib/auth/auth-redirect';
 import { usePopupStore } from '@/shared/hooks/store/popupStore';
 import type { ApiError } from '@/shared/lib/api/client';
+import { ThemeProvider } from './ThemeProvider';
 
 /**
  * 401 에러 체크 및 리다이렉트
@@ -106,10 +107,12 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        {children}
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 };
 

@@ -47,18 +47,46 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-dvh flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div 
+      className="min-h-dvh flex items-center justify-center"
+      style={{ backgroundColor: 'var(--base-off-white)' }}
+    >
       <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">
+        <div 
+          style={{
+            backgroundColor: 'var(--white)',
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-card)',
+            padding: 'var(--spacing-card)',
+            boxShadow: '0 1px 2px var(--shadow-soft)'
+          }}
+        >
+          <h1 
+            style={{
+              fontSize: '28px',
+              fontWeight: 500,
+              color: 'var(--ink-primary)',
+              marginBottom: '32px',
+              textAlign: 'center',
+              letterSpacing: '-0.01em',
+              lineHeight: 1.4
+            }}
+          >
             로그인
           </h1>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                style={{
+                  display: 'block',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: 'var(--ink-secondary)',
+                  marginBottom: '6px',
+                  lineHeight: 1.6
+                }}
               >
                 이메일
               </label>
@@ -68,7 +96,27 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-button)',
+                  backgroundColor: 'var(--white)',
+                  color: 'var(--ink-primary)',
+                  fontSize: '14px',
+                  lineHeight: 1.6,
+                  outline: 'none',
+                  transition: 'all 180ms ease-out'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--brass)'
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-default)'
+                  e.currentTarget.style.outline = 'none'
+                }}
                 placeholder="user@example.com"
               />
             </div>
@@ -76,7 +124,14 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                style={{
+                  display: 'block',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: 'var(--ink-secondary)',
+                  marginBottom: '6px',
+                  lineHeight: 1.6
+                }}
               >
                 비밀번호
               </label>
@@ -86,27 +141,93 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-button)',
+                  backgroundColor: 'var(--white)',
+                  color: 'var(--ink-primary)',
+                  fontSize: '14px',
+                  lineHeight: 1.6,
+                  outline: 'none',
+                  transition: 'all 180ms ease-out'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--brass)'
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-default)'
+                  e.currentTarget.style.outline = 'none'
+                }}
                 placeholder="비밀번호를 입력하세요"
               />
             </div>
 
             {error && (
-              <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+              <div 
+                style={{
+                  padding: '12px',
+                  backgroundColor: 'rgba(180, 87, 58, 0.1)',
+                  border: '1px solid var(--terracotta)',
+                  borderRadius: 'var(--radius-button)'
+                }}
+              >
+                <p style={{ fontSize: '13px', color: 'var(--terracotta)', lineHeight: 1.6 }}>{error}</p>
               </div>
             )}
 
             <button
               type="submit"
               disabled={loginMutation.isPending}
-              className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+              style={{
+                width: '100%',
+                padding: '12px 24px',
+                backgroundColor: loginMutation.isPending ? 'var(--ink-muted)' : 'var(--brass)',
+                color: '#ffffff',
+                borderRadius: 'var(--radius-button)',
+                fontSize: '14px',
+                fontWeight: 500,
+                border: 'none',
+                cursor: loginMutation.isPending ? 'not-allowed' : 'pointer',
+                opacity: loginMutation.isPending ? 0.6 : 1,
+                transition: 'all 180ms ease-out'
+              }}
+              onMouseEnter={(e) => {
+                if (!loginMutation.isPending) {
+                  e.currentTarget.style.backgroundColor = 'var(--brass-light)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!loginMutation.isPending) {
+                  e.currentTarget.style.backgroundColor = 'var(--brass)'
+                }
+              }}
+              onFocus={(e) => {
+                if (!loginMutation.isPending) {
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.outline = 'none'
+              }}
             >
               {loginMutation.isPending ? '로그인 중...' : '로그인'}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+          <div 
+            style={{
+              marginTop: '24px',
+              textAlign: 'center',
+              fontSize: '13px',
+              color: 'var(--ink-muted)',
+              lineHeight: 1.6
+            }}
+          >
             <p>테스트용 임시 로그인 페이지입니다.</p>
           </div>
         </div>

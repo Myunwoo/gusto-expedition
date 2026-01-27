@@ -83,17 +83,59 @@ const IngredientFormPage = () => {
 
 
   return (
-    <div className="min-h-dvh bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-6xl mx-auto p-8">
+    <div className="min-h-dvh" style={{ backgroundColor: 'var(--base-off-white)' }}>
+      <div className="max-w-5xl mx-auto" style={{ padding: 'var(--spacing-section) 24px' }}>
         {/* 헤더 */}
-        <div className="mb-6">
+        <div 
+          style={{
+            backgroundColor: 'var(--white)',
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-card)',
+            padding: 'var(--spacing-card)',
+            marginBottom: '32px',
+            boxShadow: '0 1px 2px var(--shadow-soft)'
+          }}
+        >
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            <h1 
+              style={{
+                fontSize: '28px',
+                fontWeight: 500,
+                color: 'var(--ink-primary)',
+                letterSpacing: '-0.01em',
+                lineHeight: 1.4
+              }}
+            >
               {isEditMode ? '재료 수정' : '재료 등록'}
             </h1>
             <button
               onClick={() => router.push('/admin/ingredient')}
-              className="px-4 py-2 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors"
+              style={{
+                padding: '12px 20px',
+                backgroundColor: 'transparent',
+                color: 'var(--ink-secondary)',
+                borderRadius: 'var(--radius-button)',
+                fontSize: '14px',
+                fontWeight: 500,
+                border: '1px solid var(--border-default)',
+                cursor: 'pointer',
+                transition: 'all 180ms ease-out'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(176, 141, 87, 0.05)'
+                e.currentTarget.style.borderColor = 'var(--brass)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent'
+                e.currentTarget.style.borderColor = 'var(--border-default)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.outline = 'var(--focus-ring)'
+                e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.outline = 'none'
+              }}
             >
               목록으로
             </button>
@@ -101,15 +143,33 @@ const IngredientFormPage = () => {
         </div>
 
         {isLoadingData ? (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-12">
+          <div 
+            style={{
+              backgroundColor: 'var(--white)',
+              border: '1px solid var(--border-default)',
+              borderRadius: 'var(--radius-card)',
+              padding: '48px 24px',
+              boxShadow: '0 1px 2px var(--shadow-soft)'
+            }}
+          >
             <div className="text-center">
-              <p className="text-gray-500 dark:text-gray-400">데이터를 불러오는 중...</p>
+              <p style={{ color: 'var(--ink-muted)', fontSize: '14px', lineHeight: 1.6 }}>
+                데이터를 불러오는 중...
+              </p>
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
             {/* 기본정보 섹션 */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <div 
+              style={{
+                backgroundColor: 'var(--white)',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-card)',
+                padding: 'var(--spacing-card)',
+                boxShadow: '0 1px 2px var(--shadow-soft)'
+              }}
+            >
               <CreateBaseInfo
                 data={baseInfoData}
                 onChange={setBaseInfoData}
@@ -122,7 +182,15 @@ const IngredientFormPage = () => {
 
             {/* 다국어 정보 섹션 */}
             {(isEditMode || ingredientId) && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+              <div 
+                style={{
+                  backgroundColor: 'var(--white)',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-card)',
+                  padding: 'var(--spacing-card)',
+                  boxShadow: '0 1px 2px var(--shadow-soft)'
+                }}
+              >
                 <CreateI18nInfo
                   data={i18nAliasInfoData}
                   onChange={setI18nAliasInfoData}
@@ -136,7 +204,15 @@ const IngredientFormPage = () => {
 
             {/* 별칭 섹션 */}
             {(isEditMode || ingredientId) && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+              <div 
+                style={{
+                  backgroundColor: 'var(--white)',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-card)',
+                  padding: 'var(--spacing-card)',
+                  boxShadow: '0 1px 2px var(--shadow-soft)'
+                }}
+              >
                 <CreateAliasInfo
                   data={i18nAliasInfoData}
                   onChange={setI18nAliasInfoData}
@@ -151,7 +227,15 @@ const IngredientFormPage = () => {
 
             {/* 관계 정보 섹션 - 수정 모드에서만 표시 및 조작 가능 */}
             {isEditMode && ingredientId && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+              <div 
+                style={{
+                  backgroundColor: 'var(--white)',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-card)',
+                  padding: 'var(--spacing-card)',
+                  boxShadow: '0 1px 2px var(--shadow-soft)'
+                }}
+              >
                 <CreateEdgeInfo
                   ingredientId={ingredientId}
                   data={edgeInfoData}

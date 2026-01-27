@@ -43,7 +43,27 @@ export default function IngredientSelectPopup() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="재료명으로 검색..."
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid var(--border-default)',
+                  borderRadius: 'var(--radius-button)',
+                  backgroundColor: 'var(--white)',
+                  color: 'var(--ink-primary)',
+                  fontSize: '14px',
+                  lineHeight: 1.6,
+                  outline: 'none',
+                  transition: 'all 180ms ease-out'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--brass)'
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-default)'
+                  e.currentTarget.style.outline = 'none'
+                }}
               />
             </div>
 

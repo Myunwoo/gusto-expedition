@@ -79,53 +79,187 @@ export default function IngredientDetailPage() {
 
   if (isLoading || !ingredient) {
     return (
-      <div className="min-h-dvh p-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center py-12">
-            <p className="text-gray-500">로딩 중...</p>
+      <div className="min-h-dvh" style={{ backgroundColor: 'var(--base-off-white)' }}>
+        <div className="max-w-5xl mx-auto" style={{ padding: 'var(--spacing-section) 24px' }}>
+          <div 
+            className="text-center"
+            style={{ 
+              padding: '48px 0',
+              color: 'var(--ink-muted)',
+              fontSize: '14px',
+              lineHeight: 1.6
+            }}
+          >
+            <p>로딩 중...</p>
           </div>
         </div>
       </div>
     )
   }
 
+  const defaultLocaleInfo = Object.values(ingredient.localeInfo)[0]
+  const displayName = defaultLocaleInfo?.name || ingredient.name || '재료 상세'
+
   return (
-    <div className="min-h-dvh bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-6xl mx-auto p-8">
+    <div className="min-h-dvh" style={{ backgroundColor: 'var(--base-off-white)' }}>
+      <div className="max-w-5xl mx-auto" style={{ padding: 'var(--spacing-section) 24px' }}>
         {/* Header */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6">
+        <div 
+          style={{
+            backgroundColor: 'var(--white)',
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-card)',
+            padding: 'var(--spacing-card)',
+            marginBottom: '32px',
+            boxShadow: '0 1px 2px var(--shadow-soft)'
+          }}
+        >
           <div className="flex items-center justify-between">
             <div>
-              <nav className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                <Link href="/admin/ingredient" className="hover:text-gray-700 dark:hover:text-gray-300">
+              <nav 
+                style={{
+                  fontSize: '13px',
+                  color: 'var(--ink-muted)',
+                  marginBottom: '8px',
+                  lineHeight: 1.6
+                }}
+              >
+                <Link 
+                  href="/admin/ingredient" 
+                  style={{
+                    color: 'var(--ink-muted)',
+                    textDecoration: 'none',
+                    transition: 'color 180ms ease-out'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = 'var(--ink-secondary)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'var(--ink-muted)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.outline = 'var(--focus-ring)'
+                    e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                    e.currentTarget.style.borderRadius = '2px'
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.outline = 'none'
+                  }}
+                >
                   Ingredients
                 </Link>
-                <span className="mx-2">/</span>
-                <span className="text-gray-900 dark:text-gray-100">
-                  {ingredient.name || '재료 상세'}
+                <span style={{ margin: '0 8px', color: 'var(--ink-muted)' }}>/</span>
+                <span style={{ color: 'var(--ink-primary)' }}>
+                  {displayName}
                 </span>
               </nav>
-              <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                {ingredient.name || '재료 상세'}
+              <h1 
+                style={{
+                  fontSize: '28px',
+                  fontWeight: 500,
+                  color: 'var(--ink-primary)',
+                  letterSpacing: '-0.01em',
+                  lineHeight: 1.4
+                }}
+              >
+                {displayName}
               </h1>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <button
                 onClick={() => router.push('/admin/ingredient')}
-                className="px-4 py-2 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 transition-colors"
+                style={{
+                  padding: '12px 20px',
+                  backgroundColor: 'transparent',
+                  color: 'var(--ink-secondary)',
+                  borderRadius: 'var(--radius-button)',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  border: '1px solid var(--border-default)',
+                  cursor: 'pointer',
+                  transition: 'all 180ms ease-out'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(176, 141, 87, 0.05)'
+                  e.currentTarget.style.borderColor = 'var(--brass)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.borderColor = 'var(--border-default)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = 'none'
+                }}
               >
                 목록으로
               </button>
               <button
                 onClick={handleEdit}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
+                style={{
+                  padding: '12px 20px',
+                  backgroundColor: 'var(--brass)',
+                  color: '#ffffff',
+                  borderRadius: 'var(--radius-button)',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 180ms ease-out'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--brass-light)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--brass)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.outline = 'var(--focus-ring)'
+                  e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = 'none'
+                }}
               >
                 수정
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleteIngredientMutation.isPending}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  padding: '12px 20px',
+                  backgroundColor: deleteIngredientMutation.isPending ? 'var(--ink-muted)' : 'var(--terracotta)',
+                  color: '#ffffff',
+                  borderRadius: 'var(--radius-button)',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  border: 'none',
+                  cursor: deleteIngredientMutation.isPending ? 'not-allowed' : 'pointer',
+                  opacity: deleteIngredientMutation.isPending ? 0.6 : 1,
+                  transition: 'all 180ms ease-out'
+                }}
+                onMouseEnter={(e) => {
+                  if (!deleteIngredientMutation.isPending) {
+                    e.currentTarget.style.backgroundColor = 'var(--terracotta-light)'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!deleteIngredientMutation.isPending) {
+                    e.currentTarget.style.backgroundColor = 'var(--terracotta)'
+                  }
+                }}
+                onFocus={(e) => {
+                  if (!deleteIngredientMutation.isPending) {
+                    e.currentTarget.style.outline = 'var(--focus-ring)'
+                    e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+                  }
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = 'none'
+                }}
               >
                 {deleteIngredientMutation.isPending ? '삭제 중...' : '삭제'}
               </button>
@@ -134,7 +268,7 @@ export default function IngredientDetailPage() {
         </div>
 
         {/* Content Sections */}
-        <div className="space-y-6">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
           {/* 기본정보 섹션 */}
           <BasicInfoSection ingredient={ingredient} />
 
@@ -158,58 +292,135 @@ function BasicInfoSection({
   ingredient: SelectIngredientResDto
 }) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-        기본정보
-      </h2>
-      <div className="space-y-4">
+    <div 
+      style={{
+        backgroundColor: 'var(--white)',
+        border: '1px solid var(--border-default)',
+        borderRadius: 'var(--radius-card)',
+        padding: 0,
+        boxShadow: '0 1px 2px var(--shadow-soft)',
+        overflow: 'hidden'
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: 'var(--sand-layer)',
+          padding: 'var(--spacing-card)',
+          borderBottom: '1px solid var(--divider-default)'
+        }}
+      >
+        <h2 
+          style={{
+            fontSize: '18px',
+            fontWeight: 500,
+            color: 'var(--ink-primary)',
+            margin: 0,
+            letterSpacing: '-0.01em',
+            lineHeight: 1.4
+          }}
+        >
+          기본정보
+        </h2>
+      </div>
+      <div style={{ padding: 'var(--spacing-card)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label 
+            style={{
+              display: 'block',
+              fontSize: '13px',
+              fontWeight: 500,
+              color: 'var(--ink-secondary)',
+              marginBottom: '6px',
+              lineHeight: 1.6
+            }}
+          >
             기본명
           </label>
-          <p className="text-gray-900 dark:text-gray-100">
+          <p style={{ color: 'var(--ink-primary)', fontSize: '15px', lineHeight: 1.6 }}>
             {ingredient.name || '-'}
           </p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label 
+            style={{
+              display: 'block',
+              fontSize: '13px',
+              fontWeight: 500,
+              color: 'var(--ink-secondary)',
+              marginBottom: '6px',
+              lineHeight: 1.6
+            }}
+          >
             썸네일
           </label>
           {ingredient.thumbnailUrl ? (
             <img
               src={ingredient.thumbnailUrl}
               alt={ingredient.name || '재료 이미지'}
-              className="w-32 h-32 object-cover rounded-lg"
+              style={{
+                width: '128px',
+                height: '128px',
+                objectFit: 'cover',
+                borderRadius: 'var(--radius-button)',
+                border: '1px solid var(--border-default)'
+              }}
             />
           ) : (
-            <p className="text-gray-400 dark:text-gray-500 text-sm">썸네일 없음</p>
+            <p style={{ color: 'var(--ink-muted)', fontSize: '13px', lineHeight: 1.6 }}>
+              썸네일 없음
+            </p>
           )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label 
+            style={{
+              display: 'block',
+              fontSize: '13px',
+              fontWeight: 500,
+              color: 'var(--ink-secondary)',
+              marginBottom: '6px',
+              lineHeight: 1.6
+            }}
+          >
             활성화 여부
           </label>
-          <p className="text-gray-900 dark:text-gray-100">
+          <span
+            style={{
+              display: 'inline-block',
+              padding: '4px 12px',
+              borderRadius: '12px',
+              fontSize: '12px',
+              fontWeight: 500,
+              backgroundColor: ingredient.isActive 
+                ? 'rgba(176, 141, 87, 0.12)' 
+                : 'rgba(123, 115, 104, 0.08)',
+              color: ingredient.isActive 
+                ? 'var(--brass)' 
+                : 'var(--ink-muted)'
+            }}
+          >
             {ingredient.isActive ? '활성' : '비활성'}
-          </p>
+          </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 text-sm">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', fontSize: '13px' }}>
           <div>
-            <span className="text-gray-500 dark:text-gray-400">생성일</span>
-            <p className="text-gray-900 dark:text-gray-100 mt-1">
+            <span style={{ color: 'var(--ink-muted)', lineHeight: 1.6 }}>생성일</span>
+            <p style={{ color: 'var(--ink-primary)', marginTop: '4px', lineHeight: 1.6 }}>
               {new Date(ingredient.createdAt).toLocaleString('ko-KR')}
             </p>
           </div>
           <div>
-            <span className="text-gray-500 dark:text-gray-400">수정일</span>
-            <p className="text-gray-900 dark:text-gray-100 mt-1">
+            <span style={{ color: 'var(--ink-muted)', lineHeight: 1.6 }}>수정일</span>
+            <p style={{ color: 'var(--ink-primary)', marginTop: '4px', lineHeight: 1.6 }}>
               {new Date(ingredient.updatedAt).toLocaleString('ko-KR')}
             </p>
           </div>
         </div>
+      </div>
       </div>
     </div>
   )
@@ -229,71 +440,183 @@ function I18nSection({
   const currentAliases = ingredient.aliases[selectedLocale] || []
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-        다국어 정보
-      </h2>
-
+    <div 
+      style={{
+        backgroundColor: 'var(--white)',
+        border: '1px solid var(--border-default)',
+        borderRadius: 'var(--radius-card)',
+        padding: 0,
+        boxShadow: '0 1px 2px var(--shadow-soft)',
+        overflow: 'hidden'
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: 'var(--sand-layer)',
+          padding: 'var(--spacing-card)',
+          borderBottom: '1px solid var(--divider-default)'
+        }}
+      >
+        <h2 
+          style={{
+            fontSize: '18px',
+            fontWeight: 500,
+            color: 'var(--ink-primary)',
+            margin: 0,
+            letterSpacing: '-0.01em',
+            lineHeight: 1.4
+          }}
+        >
+          다국어 정보
+        </h2>
+      </div>
+      <div style={{ padding: 'var(--spacing-card)' }}>
       {/* 언어 탭 */}
-      <div className="flex gap-2 mb-4 border-b border-gray-200 dark:border-gray-700">
-        {locales.map((locale) => (
-          <button
-            key={locale}
-            onClick={() => setSelectedLocale(locale)}
-            className={`px-4 py-2 font-medium text-sm transition-colors ${selectedLocale === locale
-              ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-              }`}
-          >
-            {locale}
-          </button>
-        ))}
+      <div 
+        style={{
+          display: 'flex',
+          gap: '8px',
+          marginBottom: '24px',
+          borderBottom: '1px solid var(--divider-default)'
+        }}
+      >
+        {locales.map((locale) => {
+          const isActive = selectedLocale === locale
+          return (
+            <button
+              key={locale}
+              onClick={() => setSelectedLocale(locale)}
+              style={{
+                padding: '8px 16px',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: isActive ? 'var(--brass)' : 'var(--ink-secondary)',
+                borderBottom: isActive ? '2px solid var(--brass)' : '2px solid transparent',
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderTop: 'none',
+                borderLeft: 'none',
+                borderRight: 'none',
+                cursor: 'pointer',
+                transition: 'all 180ms ease-out',
+                marginBottom: '-1px'
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.color = 'var(--ink-primary)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.color = 'var(--ink-secondary)'
+                }
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.outline = 'var(--focus-ring)'
+                e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.outline = 'none'
+              }}
+            >
+              {locale}
+            </button>
+          )
+        })}
       </div>
 
       {/* 선택된 언어의 정보 */}
       {currentLocaleInfo ? (
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label 
+              style={{
+                display: 'block',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: 'var(--ink-secondary)',
+                marginBottom: '6px',
+                lineHeight: 1.6
+              }}
+            >
               이름
             </label>
-            <p className="text-gray-900 dark:text-gray-100">{currentLocaleInfo.name}</p>
+            <p style={{ color: 'var(--ink-primary)', fontSize: '15px', lineHeight: 1.6 }}>
+              {currentLocaleInfo.name}
+            </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label 
+              style={{
+                display: 'block',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: 'var(--ink-secondary)',
+                marginBottom: '6px',
+                lineHeight: 1.6
+              }}
+            >
               설명
             </label>
-            <p className="text-gray-900 dark:text-gray-100 whitespace-pre-line">
+            <p 
+              style={{ 
+                color: 'var(--ink-primary)', 
+                fontSize: '15px',
+                lineHeight: 1.7,
+                whiteSpace: 'pre-line'
+              }}
+            >
               {currentLocaleInfo.description || '설명 없음'}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label 
+              style={{
+                display: 'block',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: 'var(--ink-secondary)',
+                marginBottom: '6px',
+                lineHeight: 1.6
+              }}
+            >
               별칭 (Alias)
             </label>
-            <div className="flex flex-wrap gap-2">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {currentAliases.length > 0 ? (
                 currentAliases.map((alias) => (
                   <span
                     key={alias.aliasId}
-                    className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-sm"
+                    style={{
+                      padding: '4px 12px',
+                      backgroundColor: 'rgba(176, 141, 87, 0.08)',
+                      color: 'var(--ink-secondary)',
+                      borderRadius: '12px',
+                      fontSize: '12px',
+                      lineHeight: 1.5
+                    }}
                   >
                     {alias.alias}
                   </span>
                 ))
               ) : (
-                <span className="text-gray-400 dark:text-gray-500 text-sm">별칭 없음</span>
+                <span style={{ color: 'var(--ink-muted)', fontSize: '13px', lineHeight: 1.6 }}>
+                  별칭 없음
+                </span>
               )}
             </div>
           </div>
         </div>
       ) : (
-        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-          <p>등록된 정보가 없습니다.</p>
+        <div style={{ padding: '48px 24px', textAlign: 'center' }}>
+          <p style={{ color: 'var(--ink-muted)', fontSize: '14px', lineHeight: 1.6 }}>
+            등록된 정보가 없습니다.
+          </p>
         </div>
       )}
+      </div>
     </div>
   )
 }
@@ -335,23 +658,85 @@ function RelationsSection({
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-        관계
-      </h2>
-
+    <div 
+      style={{
+        backgroundColor: 'var(--white)',
+        border: '1px solid var(--border-default)',
+        borderRadius: 'var(--radius-card)',
+        padding: 0,
+        boxShadow: '0 1px 2px var(--shadow-soft)',
+        overflow: 'hidden'
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: 'var(--sand-layer)',
+          padding: 'var(--spacing-card)',
+          borderBottom: '1px solid var(--divider-default)'
+        }}
+      >
+        <h2 
+          style={{
+            fontSize: '18px',
+            fontWeight: 500,
+            color: 'var(--ink-primary)',
+            margin: 0,
+            letterSpacing: '-0.01em',
+            lineHeight: 1.4
+          }}
+        >
+          관계
+        </h2>
+      </div>
+      <div style={{ padding: 'var(--spacing-card)' }}>
       {/* 관계 타입 탭 */}
-      <div className="flex gap-2 mb-4 border-b border-gray-200 dark:border-gray-700">
+      <div 
+        style={{
+          display: 'flex',
+          gap: '8px',
+          marginBottom: '24px',
+          borderBottom: '1px solid var(--divider-default)'
+        }}
+      >
         {(['PAIR_WELL', 'AVOID', 'NEUTRAL'] as const).map((type) => {
           const count = relatedIngredients.filter((r) => r.relationType === type).length
+          const isActive = selectedType === type
           return (
             <button
               key={type}
               onClick={() => setSelectedType(type)}
-              className={`px-4 py-2 font-medium text-sm transition-colors ${selectedType === type
-                ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                }`}
+              style={{
+                padding: '8px 16px',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: isActive ? 'var(--brass)' : 'var(--ink-secondary)',
+                borderBottom: isActive ? '2px solid var(--brass)' : '2px solid transparent',
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderTop: 'none',
+                borderLeft: 'none',
+                borderRight: 'none',
+                cursor: 'pointer',
+                transition: 'all 180ms ease-out',
+                marginBottom: '-1px'
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.color = 'var(--ink-primary)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.color = 'var(--ink-secondary)'
+                }
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.outline = 'var(--focus-ring)'
+                e.currentTarget.style.outlineOffset = 'var(--focus-ring-offset)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.outline = 'none'
+              }}
             >
               {typeLabels[type]} ({count})
             </button>
@@ -360,38 +745,74 @@ function RelationsSection({
       </div>
 
       {/* 관계 리스트 */}
-      <div className="space-y-2">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {filteredRelations.length > 0 ? (
           filteredRelations.map((relation) => (
             <div
               key={relation.ingredientId}
-              className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              style={{
+                padding: '16px',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-button)',
+                backgroundColor: 'var(--white)',
+                transition: 'all 180ms ease-out'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(176, 141, 87, 0.05)'
+                e.currentTarget.style.borderColor = 'var(--brass)'
+              }}
+              onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--white)'
+                e.currentTarget.style.borderColor = 'var(--border-default)'
+              }}
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-gray-100">
-                    {relation.name}
+              <div>
+                <p 
+                  style={{
+                    fontSize: '15px',
+                    fontWeight: 500,
+                    color: 'var(--ink-primary)',
+                    lineHeight: 1.6,
+                    marginBottom: '6px'
+                  }}
+                >
+                  {relation.name}
+                </p>
+                <p 
+                  style={{
+                    fontSize: '13px',
+                    color: 'var(--ink-muted)',
+                    lineHeight: 1.6
+                  }}
+                >
+                  {convertScoreToDisplay(relation.score, relation.relationType) !== null
+                    ? `점수: ${convertScoreToDisplay(relation.score, relation.relationType)}/10`
+                    : '점수: -'}
+                  {' | '}신뢰도: {Math.round(relation.confidence * 100)}%
+                </p>
+                {relation.reasonSummary && (
+                  <p 
+                    style={{
+                      fontSize: '13px',
+                      color: 'var(--ink-muted)',
+                      marginTop: '6px',
+                      lineHeight: 1.6
+                    }}
+                  >
+                    {relation.reasonSummary}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    {convertScoreToDisplay(relation.score, relation.relationType) !== null
-                      ? `점수: ${convertScoreToDisplay(relation.score, relation.relationType)}/10`
-                      : '점수: -'}
-                    {' | '}신뢰도: {Math.round(relation.confidence * 100)}%
-                  </p>
-                  {relation.reasonSummary && (
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      {relation.reasonSummary}
-                    </p>
-                  )}
-                </div>
+                )}
               </div>
             </div>
           ))
         ) : (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            등록된 {typeLabels[selectedType]} 관계가 없습니다.
+          <div style={{ padding: '48px 24px', textAlign: 'center' }}>
+            <p style={{ color: 'var(--ink-muted)', fontSize: '14px', lineHeight: 1.6 }}>
+              등록된 {typeLabels[selectedType]} 관계가 없습니다.
+            </p>
           </div>
         )}
+      </div>
       </div>
     </div>
   )
