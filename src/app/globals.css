@@ -42,6 +42,10 @@
   /* Focus Ring (접근성 강화) */
   --focus-ring: 2px solid var(--brass);
   --focus-ring-offset: 2px;
+
+  /* Explore Mindmap (DESIGN_GUIDE 준수: 화이트 베이스) */
+  --mindmap-line-good: rgba(30, 29, 27, 0.2);
+  --mindmap-line-warn: rgba(180, 87, 58, 0.4);
 }
 
 @theme inline {
@@ -75,6 +79,10 @@
   /* Background/Foreground (기존 변수 유지) */
   --background: #121110;
   --foreground: #F2EBDD;
+
+  /* Explore Mindmap (다크: 웜 차콜, 선은 아이보리/테라코타) */
+  --mindmap-line-good: rgba(242, 235, 221, 0.2);
+  --mindmap-line-warn: rgba(192, 106, 78, 0.5);
 }
 
 body {
