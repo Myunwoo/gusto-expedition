@@ -13,6 +13,7 @@ import type {
   UpdateIngredientI18nReqDto,
   CreateAliasReqDto,
   UpdateAliasAllReqDto,
+  CreateIngredientI18nReqDto,
 } from '@/entities/ingredient_admin/model/types'
 import type {
   CreateBaseInfoData,
@@ -179,7 +180,7 @@ export const useIngredientFormActions = ({
           name: data.name,
           description: data.description || undefined,
         }
-        await createI18nMutation.mutateAsync(i18nData)
+        await updateI18nMutation.mutateAsync(i18nData)
 
         if (data.aliases.length > 0) {
           const aliasData: CreateAliasReqDto = {

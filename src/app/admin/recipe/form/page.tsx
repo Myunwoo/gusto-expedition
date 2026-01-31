@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useRecipeFormData } from '@/features/recipe-admin/hooks/useRecipeFormData'
 import {
@@ -23,7 +23,7 @@ import CreateAliasInfo from '@/features/recipe-admin/ui/CreateAliasInfo'
 import CreateIngredientInfo from '@/features/recipe-admin/ui/CreateIngredientInfo'
 import IngredientSelectPopup from '@/features/ingredient-admin/ui/IngredientSelectPopup'
 
-const RecipeFormPage = () => {
+const RecipeFormContent = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -83,7 +83,7 @@ const RecipeFormPage = () => {
     <div className="min-h-dvh" style={{ backgroundColor: 'var(--base-off-white)' }}>
       <div className="max-w-5xl mx-auto" style={{ padding: 'var(--spacing-section) 24px' }}>
         {/* 헤더 */}
-        <div 
+        <div
           style={{
             backgroundColor: 'var(--white)',
             border: '1px solid var(--border-default)',
@@ -94,7 +94,7 @@ const RecipeFormPage = () => {
           }}
         >
           <div className="flex items-center justify-between">
-            <h1 
+            <h1
               style={{
                 fontSize: '28px',
                 fontWeight: 500,
@@ -140,7 +140,7 @@ const RecipeFormPage = () => {
         </div>
 
         {isLoadingData ? (
-          <div 
+          <div
             style={{
               backgroundColor: 'var(--white)',
               border: '1px solid var(--border-default)',
@@ -158,7 +158,7 @@ const RecipeFormPage = () => {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
             {/* 기본정보 섹션 */}
-            <div 
+            <div
               style={{
                 backgroundColor: 'var(--white)',
                 border: '1px solid var(--border-default)',
@@ -179,7 +179,7 @@ const RecipeFormPage = () => {
 
             {/* 다국어 정보 섹션 */}
             {recipeId && (
-              <div 
+              <div
                 style={{
                   backgroundColor: 'var(--white)',
                   border: '1px solid var(--border-default)',
@@ -201,7 +201,7 @@ const RecipeFormPage = () => {
 
             {/* 별칭 섹션 */}
             {recipeId && (
-              <div 
+              <div
                 style={{
                   backgroundColor: 'var(--white)',
                   border: '1px solid var(--border-default)',
@@ -224,7 +224,7 @@ const RecipeFormPage = () => {
 
             {/* 재료 섹션 */}
             {recipeId && (
-              <div 
+              <div
                 style={{
                   backgroundColor: 'var(--white)',
                   border: '1px solid var(--border-default)',
@@ -241,6 +241,26 @@ const RecipeFormPage = () => {
       </div>
       <IngredientSelectPopup />
     </div>
+  )
+}
+
+const RecipeFormPage = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-dvh" style={{ backgroundColor: 'var(--base-off-white)' }}>
+          <div className="max-w-5xl mx-auto" style={{ padding: 'var(--spacing-section) 24px' }}>
+            <div className="text-center" style={{ padding: '48px 0' }}>
+              <p style={{ color: 'var(--ink-muted)', fontSize: '14px', lineHeight: 1.6 }}>
+                로딩 중...
+              </p>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <RecipeFormContent />
+    </Suspense>
   )
 }
 
