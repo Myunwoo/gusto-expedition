@@ -21,7 +21,6 @@ export default function RecipeListPage() {
       filtered = filtered.filter(
         (recipe) =>
           recipe.title.toLowerCase().includes(query) ||
-          recipe.description?.toLowerCase().includes(query) ||
           recipe.recipeId.toString().includes(query)
       )
     }
@@ -41,9 +40,9 @@ export default function RecipeListPage() {
     return (
       <div className="min-h-dvh" style={{ backgroundColor: 'var(--base-off-white)' }}>
         <div className="max-w-5xl mx-auto" style={{ padding: 'var(--spacing-section) 24px' }}>
-          <div 
+          <div
             className="text-center"
-            style={{ 
+            style={{
               padding: '48px 0',
               color: 'var(--ink-muted)',
               fontSize: '14px',
@@ -61,9 +60,9 @@ export default function RecipeListPage() {
     return (
       <div className="min-h-dvh" style={{ backgroundColor: 'var(--base-off-white)' }}>
         <div className="max-w-5xl mx-auto" style={{ padding: 'var(--spacing-section) 24px' }}>
-          <div 
+          <div
             className="text-center"
-            style={{ 
+            style={{
               padding: '48px 0',
               color: 'var(--terracotta)',
               fontSize: '14px',
@@ -81,7 +80,7 @@ export default function RecipeListPage() {
     <div className="min-h-dvh" style={{ backgroundColor: 'var(--base-off-white)' }}>
       <div className="max-w-5xl mx-auto" style={{ padding: 'var(--spacing-section) 24px' }}>
         {/* 헤더 */}
-        <div 
+        <div
           style={{
             backgroundColor: 'var(--white)',
             border: '1px solid var(--border-default)',
@@ -93,7 +92,7 @@ export default function RecipeListPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <h1 
+              <h1
                 style={{
                   fontSize: '28px',
                   fontWeight: 500,
@@ -105,7 +104,7 @@ export default function RecipeListPage() {
               >
                 레시피 관리
               </h1>
-              <p 
+              <p
                 style={{
                   fontSize: '14px',
                   color: 'var(--ink-muted)',
@@ -148,7 +147,7 @@ export default function RecipeListPage() {
         </div>
 
         {/* 검색 */}
-        <div 
+        <div
           style={{
             backgroundColor: 'var(--white)',
             border: '1px solid var(--border-default)',
@@ -165,7 +164,7 @@ export default function RecipeListPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="레시피명, 설명 또는 ID로 검색..."
+                placeholder="레시피명 또는 ID로 검색..."
                 style={{
                   width: '100%',
                   padding: '12px 16px',
@@ -193,7 +192,7 @@ export default function RecipeListPage() {
         </div>
 
         {/* 레시피 리스트 */}
-        <div 
+        <div
           style={{
             backgroundColor: 'var(--white)',
             border: '1px solid var(--border-default)',
@@ -252,7 +251,7 @@ export default function RecipeListPage() {
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p 
+                      <p
                         style={{
                           fontSize: '16px',
                           fontWeight: 500,
@@ -263,23 +262,7 @@ export default function RecipeListPage() {
                       >
                         {recipe.title}
                       </p>
-                      {recipe.description && (
-                        <p 
-                          style={{
-                            fontSize: '13px',
-                            color: 'var(--ink-muted)',
-                            marginTop: '4px',
-                            lineHeight: 1.6,
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden'
-                          }}
-                        >
-                          {recipe.description}
-                        </p>
-                      )}
-                      <div 
+                      <div
                         style={{
                           display: 'flex',
                           gap: '16px',
@@ -290,8 +273,6 @@ export default function RecipeListPage() {
                         }}
                       >
                         <span>ID: {recipe.recipeId}</span>
-                        {recipe.servings && <span>인분: {recipe.servings}</span>}
-                        {recipe.cookTimeMinutes && <span>조리시간: {recipe.cookTimeMinutes}분</span>}
                       </div>
                     </div>
                     <svg
