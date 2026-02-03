@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
+// 서버 사이드 API Route에서 백엔드로 직접 연결
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api';
 
 export async function GET(
@@ -112,24 +113,10 @@ async function handleRequest(
       if (refreshResponse.ok) {
         const refreshData = await refreshResponse.json();
 
-        // 새 토큰을 httpOnly 쿠키에 저장
-        cookieStore.set('GEAT', refreshData.accessToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-          maxAge: 60 * 10, // 10분
-          path: '/',
-        });
-
-        if (refreshData.refreshToken) {
-          cookieStore.set('GERT', refreshData.refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 60 * 60 * 24 * 7, // 7일
-            path: '/',
-          });
-        }
+        // 프로토콜 확인: 프록시 뒤에서 실행되는 경우 X-Forwarded-Proto 헤더 확인
+        const protocol = request.headers.get('x-forwarded-proto') ||
+          (request.url.startsWith('https') ? 'https' : 'http');
+        const isSecure = protocol === 'https';
 
         // 새 토큰으로 원래 요청 재시도
         const retryHeaders: Record<string, string> = {
@@ -149,17 +136,43 @@ async function handleRequest(
           body: body || undefined,
         });
 
-        return createResponse(retryResponse);
+        // Response 생성 및 쿠키 설정
+        const nextResponse = await createResponse(retryResponse);
+
+        // 명시적으로 쿠키 설정
+        nextResponse.cookies.set('GEAT', refreshData.accessToken, {
+          httpOnly: true,
+          secure: isSecure,
+          sameSite: 'lax',
+          maxAge: 60 * 10, // 10분
+          path: '/',
+        });
+
+        if (refreshData.refreshToken) {
+          nextResponse.cookies.set('GERT', refreshData.refreshToken, {
+            httpOnly: true,
+            secure: isSecure,
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 24 * 7, // 7일
+            path: '/',
+          });
+        }
+
+        return nextResponse;
       } else {
         // 갱신 실패 시 쿠키 삭제
-        cookieStore.delete('GEAT');
-        cookieStore.delete('GERT');
+        const errorResponse = await createResponse(response);
+        errorResponse.cookies.delete('GEAT');
+        errorResponse.cookies.delete('GERT');
+        return errorResponse;
       }
     } catch (error) {
       console.error('Token refresh failed in proxy:', error);
       // 갱신 실패 시 쿠키 삭제
-      cookieStore.delete('GEAT');
-      cookieStore.delete('GERT');
+      const errorResponse = await createResponse(response);
+      errorResponse.cookies.delete('GEAT');
+      errorResponse.cookies.delete('GERT');
+      return errorResponse;
     }
   }
 
